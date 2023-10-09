@@ -45,9 +45,9 @@ const adminDetails = async (req, res) => {
 
 const searchUser = async (req, res) => {
     let { email, phone_number } = req.body;
-    email = email.toLowerCase();
-
+    
     if (email) {
+        email = email.toLowerCase();
         const user = await searchByEmail('USERS',email);
         return res.status(200).json({
             'status': 'success',
@@ -68,9 +68,9 @@ const searchUser = async (req, res) => {
 
 const searchRestaurant = async (req, res) => {
     let { email, phone_number } = req.body;
-    email = email.toLowerCase();
-
+    
     if (email) {
+        email = email.toLowerCase();
         const restaurant = await searchByEmail('RESTAURANTS',email);
         return res.status(200).json({
             'status': 'success',
@@ -97,7 +97,8 @@ const addRestaurants = async (req,res) => {
         const result = await connection.execute(
             `INSERT INTO RESTAURANTS (email, password, restaurantName, address, phone_number, website) VALUES (:email, :password, :restaurantName, :address, :phone_number, :wesbite)`,
             [email, hashedPassword, restaurantName, address, phone_number, website],
-            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            { outFormat: oracledb.OUT_FORMAT_OBJECT },
+        
         );
         connection.close();
         return res.status(200).json({
@@ -121,7 +122,8 @@ const removeUser = async (req,res) => {
         const result = await connection.execute(
             `DELETE FROM USERS WHERE UserID=:UserID`,
             [UserID],
-            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            {autoCommit: true}
+
         );
         connection.close();
         return res.status(200).json({
@@ -145,7 +147,7 @@ const removeRestaurant = async (req,res) => {
         const result = await connection.execute(
             `DELETE FROM RESTAURANTS WHERE RestaurantID=:RestaurantID`,
             [RestaurantID],
-            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            {autoCommit: true}
         );
         connection.close();
         return res.status(200).json({
