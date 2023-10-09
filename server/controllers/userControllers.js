@@ -5,8 +5,8 @@ const secretKey = process.env.JWT_SECRET_KEY;
 const oracledb = require('oracledb')
 
 const register = async (req, res) => {
-    const { fullName, email, password, phoneNumber, address } = req.body;
-
+    let { fullName, email, password, phoneNumber, address } = req.body;
+    email = email.toLowerCase();
     try {
         //Connecting to database each time a user registers
         const connection = await getConnection();
@@ -37,8 +37,8 @@ const register = async (req, res) => {
 
 
 const login = async (req, res) => {
-    const { email, password } = req.body;
-
+    let { email, password } = req.body;
+    email = email.toLowerCase();
     try {
         const connection = await getConnection();
         const result = await connection.execute(
@@ -56,7 +56,9 @@ const login = async (req, res) => {
             connection.close();
             return res.status(200).json({
                 'status':'success',
-                'message':'Login Successful!'
+                'message':'Login Successful!',
+                'userType':user.Role,
+                'token':token
             })
         }
         else {
