@@ -20,7 +20,7 @@ const restaurantLogin = async (req, res) => {
         const RESTAURANTS = result.rows[0];
 
         if (RESTAURANTS && (await bcrypt.compare(password, RESTAURANTS.PASSWORD))) {
-            const token = jwt.sign({ userId: RESTAURANTS.RestaurantID}, secretKey, {
+            const token = jwt.sign({ userId: RESTAURANTS.RESTAURANTID}, secretKey, {
                 expiresIn: '1h',
             });
             connection.close();

@@ -49,6 +49,7 @@ const searchUser = async (req, res) => {
     if (email) {
         email = email.toLowerCase();
         const user = await searchByEmail('USERS',email);
+        
         return res.status(200).json({
             'status': 'success',
             'message': 'User Found',
