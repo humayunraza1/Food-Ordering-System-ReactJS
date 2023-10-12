@@ -1,8 +1,10 @@
 const {getConnection} = require('../connection.js');
 const oracledb = require('oracledb');
-const emailUniquenessCheck = async (req, res, next) => {
-    const {email} = req.body;
 
+
+const emailUniquenessCheck = async (req, res, next) => {
+    let {email} = req.body;
+    email = email.toLowerCase();
     try {
         const connection = await getConnection();
         const emailCheck = await connection.execute(
