@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const secretKey = process.env.JWT_SECRET_KEY;
 
-const authorize = (req, res, next) => {
+const restaurantAuthorization = (req, res, next) => {
     const token = req.headers.authorization;
     if (!token) {
         return res.status(401).json({ 
@@ -15,28 +15,12 @@ const authorize = (req, res, next) => {
             console.log('Verify error');
           return res.status(401).json({ "error": 'Unauthorized' });
         }
-        req.user=decoded; // 'user':{'userid':userid, 'role':role}
+        req.restaurant=decoded; // 'user':{'userid':userid, 'role':role}
     });
     
     next();
 }
 
-const isUser = (req, res, next) => {
-    if (req.user.role !== 'user') {
-        return res.status(401).json({ 'error': 'Unauthorized' });
-    }
-    next();
-}
-
-const isAdmin = (req, res, next) => {
-    if (req.user.role !== 'admin') {
-        return res.status(401).json({ 'error': 'Unauthorized' });
-    }
-    next();
-}
-
 module.exports = {
-    authorize,
-    isAdmin,
-    isUser,
+    restaurantAuthorization,
 }

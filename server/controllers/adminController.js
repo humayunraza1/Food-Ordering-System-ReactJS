@@ -9,17 +9,22 @@ const adminDetails = async (req, res) => {
     try {
         const connection = await getConnection();
         const result1 = await connection.execute(
-            `SELECT userID, fullName, email, phone_number FROM USERS WHERE UserID < 15 AND Role = 'user'`,
+            `SELECT userID, fullName, email, phone_number FROM USERS WHERE Role = 'user' FETCH FIRST 15 ROWS ONLY`,
             [],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
 
         const result2 = await connection.execute(
-            `SELECT RestaurantID, RestaurantName FROM RESTAURANTS WHERE RestaurantID < 15`,
+            `SELECT RestaurantID, RestaurantName FROM RESTAURANTS FETCH FIRST 15 ROWS ONLY`,
             [],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
         
+        const result3 = await connection.execute(
+            `SELECT OrderID, OrderStatus FROM ORDERS ORDER BY DESC FETCH FIRST 15 ROWS ONLY`,
+            [],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
 
         const userData = result1.rows;
         const restaurantData = result2.rows;
@@ -30,6 +35,7 @@ const adminDetails = async (req, res) => {
             'data':{
                 'users': userData,
                 'restaurants': restaurantData,
+                'order':result3.rows
             }
         })
 
