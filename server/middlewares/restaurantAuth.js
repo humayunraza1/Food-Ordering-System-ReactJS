@@ -7,12 +7,15 @@ const restaurantAuthorization = (req, res, next) => {
         return res.status(401).json({ 
             'status': 'error',
             'message': 'Unauthorized',
-            'redirectUrl': '/login'
+            'redirectUrl': '/restaurants/login'
         });
     }
     jwt.verify(token, secretKey, (err, decoded) => {
         if (err) {
-            return res.status(401).json({ "error": 'Unauthorized' });
+            return res.status(401).json({
+                'status': 'error',  
+                'message': 'Session expired / Please login again' 
+            });
         }
         req.restaurant=decoded; 
         next();

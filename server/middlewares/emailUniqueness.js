@@ -16,7 +16,7 @@ const emailUniquenessCheck = async (req, res, next) => {
             connection.close();
             return res.status(400).json({
                 'status':'error',
-                'message':'user with provided email already exists'
+                'message':'User with provided email already exists'
             })
         }
         connection.close();

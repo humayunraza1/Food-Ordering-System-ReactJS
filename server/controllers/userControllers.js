@@ -14,8 +14,8 @@ const phoneNumberRegex = /^\d{11}$/;
 const register = async (req, res) => {
     let { fullName, email, password, phoneNumber, address } = req.body;
     email = email.toLowerCase();
-    
-    
+
+
     if (password.length < 6) {
         return res.status(400).json({
             'status': 'error',
@@ -80,7 +80,7 @@ const login = async (req, res) => {
             const token = jwt.sign({ userId: user.USERID, role: user.ROLE }, secretKey, {
                 expiresIn: '1h',
             });
-            let redirectUrl='';
+            let redirectUrl = '';
             if (user.ROLE == 'admin') {
                 redirectUrl = '/admin/admin-dashboard';
             }
@@ -117,7 +117,7 @@ const logout = async (req, res) => {
         'status': 'success',
         'message': 'User Logged Out Successfully!',
         'redirectUrl': '/users/login'
-      });
+    });
 }
 
 const displayUserDetails = async (req, res) => {
@@ -154,8 +154,8 @@ const displayUserDetails = async (req, res) => {
 }
 
 const updateUserDetails = async (req, res) => {
-    const {userId} = req.user;
-    let {fullName, oldpassword, newpassword, phoneNumber, address} = req.body;
+    const { userId } = req.user;
+    let { fullName, oldpassword, newpassword, phoneNumber, address } = req.body;
     try {
         const connection = await getConnection();
         if (fullName) { // Update Name
@@ -174,7 +174,7 @@ const updateUserDetails = async (req, res) => {
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
             const user = result.rows[0];
-            if(!await bcrypt.compare(oldpassword, user.PASSWORD)) {
+            if (!await bcrypt.compare(oldpassword, user.PASSWORD)) {
                 return res.status(400).json({
                     'status': 'error',
                     'message': 'Old Password is incorrect!'
@@ -209,11 +209,11 @@ const updateUserDetails = async (req, res) => {
         connection.close();
         return res.status(200).json({
             'status': 'success',
-            'message':'user details updated successfully'
+            'message': 'user details updated successfully'
         })
-            
 
-    } catch(err) {
+
+    } catch (err) {
         console.log(`Error from updateUserDetails function ${err}`);
         return res.status(500).json({
             'status': 'error',
@@ -222,152 +222,157 @@ const updateUserDetails = async (req, res) => {
     }
 }
 
-const browseRestaurants = async (req,res) => {
+const browseRestaurants = async (req, res) => {
     try {
         const connection = await getConnection();
         const result = await connection.execute(
             `SELECT RestaurantID, email, RestaurantName, address, phone_number, website FROM RESTAURANTS`,
             [],
-            {outFormat: oracledb.OUT_FORMAT_OBJECT}
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
         connection.close();
         return res.status(200).json({
-            'status':'success',
-            'message':'Details Fetched Successfully!',
-            'data':result.rows
+            'status': 'success',
+            'message': 'Details Fetched Successfully!',
+            'data': result.rows
 
         })
-    } catch(err) {
+    } catch (err) {
         console.log(`Error from browseRestaurants function ${err}`);
         return res.status(500).json({
-            'status':'error',
-            'message':'This is an issue from our end please try again later!'
+            'status': 'error',
+            'message': 'This is an issue from our end please try again later!'
         })
     }
 }
 
-const searchRestaurant = async(req,res) => {
-    let {name} = req.body;
-    name = name.toUpperCase();
-    try {
-        const connection = await getConnection();
-        const query = `SELECT RestaurantID, email, RestaurantName, address, phone_number, website FROM RESTAURANTS WHERE RestaurantName LIKE '%' || :name || '%'`;
-        const result = await connection.execute(
-            query,
-            [name],
-            {outFormat: oracledb.OUT_FORMAT_OBJECT}
-        );
-        connection.close();
-        if (result.rows.length !== 0) {
-        return res.status(200).json({
-            'status':'success',
-            'message':'Details Fetched Successfully!',
-            'data':result.rows
+// const searchRestaurant = async (req, res) => {
+//     let { name } = req.body;
+//     name = name.toUpperCase();
+//     try {
+//         const connection = await getConnection();
+//         const query = `SELECT RestaurantID, email, RestaurantName, address, phone_number, website FROM RESTAURANTS WHERE RestaurantName LIKE '%' || :name || '%'`;
+//         const result = await connection.execute(
+//             query,
+//             [name],
+//             { outFormat: oracledb.OUT_FORMAT_OBJECT }
+//         );
+//         connection.close();
+//         if (result.rows.length !== 0) {
+//             return res.status(200).json({
+//                 'status': 'success',
+//                 'message': 'Details Fetched Successfully!',
+//                 'data': result.rows
 
-        })}
-        return res.status(404).json({
-            'status':'failed',
-            'message':'No Restaurant Found!'
-        })
-    } catch(err) {
-        console.log(`Error from searchRestaurant function ${err}`);
-        return res.status(500).json({
-            'status':'error',
-            'message':'This is an issue from our end please try again later!'
-        })
-    }
-}
+//             })
+//         }
+//         return res.status(404).json({
+//             'status': 'failed',
+//             'message': 'No Restaurant Found!'
+//         })
+//     } catch (err) {
+//         console.log(`Error from searchRestaurant function ${err}`);
+//         return res.status(500).json({
+//             'status': 'error',
+//             'message': 'This is an issue from our end please try again later!'
+//         })
+//     }
+// }
 
-const browseProducts = async (req,res) => {
-    const {restaurantId} = req.body;
+const browseProducts = async (req, res) => {
+    const { restaurantId } = req.body;
     try {
         const connection = await getConnection();
         const result = await connection.execute(
             `SELECT * FROM RESTAURANTITEMS WHERE restaurantId=:restaurantId`,
             [restaurantId],
-            {outFormat: oracledb.OUT_FORMAT_OBJECT}
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
         connection.close();
         if (result.rows.length === 0) {
             return res.status(404).json({
-                'status':'failed',
-                'message':'No Products Found!'
+                'status': 'failed',
+                'message': 'No Products Found!'
             })
         }
         return res.status(200).json({
-            'status':'success',
-            'message':'Details Fetched Successfully!',
-            'data':result.rows
+            'status': 'success',
+            'message': 'Details Fetched Successfully!',
+            'data': result.rows
 
         })
-    } catch(err) {
+    } catch (err) {
         console.log(`Error from browseProducts function ${err}`);
         return res.status(500).json({
-            'status':'error',
-            'message':'This is an issue from our end please try again later!'
+            'status': 'error',
+            'message': 'This is an issue from our end please try again later!'
         })
     }
 
 }
 
-const placeOrder = async (req,res) => {
+const placeOrder = async (req, res) => {
     let total = 0;
-    const {userId} = req.user;
-    const {restaurantId, products} = req.body;
+    const { userId } = req.user;
+    const { restaurantId, products } = req.body;
     try {
         const connection = await getConnection();
-        for (let i=0; i<products.length; i++) {
+        for (let i = 0; i < products.length; i++) {
             const result = await connection.execute(
                 `SELECT price FROM RESTAURANTITEMS WHERE productId=:productId`,
                 [products[i].productId],
-                {outFormat: oracledb.OUT_FORMAT_OBJECT}
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
             const price = result.rows[0].PRICE;
-            total += price*products[i].quantity;
+            total += price * products[i].quantity;
         }
         const orderStatus = 'Processing';
         const orderDate = formatDatetime(new Date());
-        const result = await connection.execute(
-            `INSERT INTO ORDERS (UserID, RestaurantID, OrderTimeDate, OrderStatus, GRANDTOTAL) values (:userId, :restaurantId, :orderDate, :orderStatus,
-                 :total)`,
-            [userId, restaurantId, orderDate, orderStatus, total],
-            {autoCommit: true}
+        console.log(orderDate);
+        let insertResult = await connection.execute(
+            `INSERT INTO ORDERS (UserID, RestaurantID, OrderTimeDate, OrderStatus, GRANDTOTAL) 
+             values (:userId, :restaurantId, TO_TIMESTAMP(:orderDate, 'YYYY-MM-DD HH24:MI:SS.FF3'), :orderStatus, :total)
+             RETURNING OrderID INTO :orderId`,
+            { userId, restaurantId, orderDate, orderStatus, total, orderId: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER } },
+            { autoCommit: true }
         );
-        const orderId = result.rows[0].ORDERID;
-        for (let i=0; i<products.length; i++) {
+        
+        
+        const orderId = insertResult.outBinds.orderId[0];
+        for (let i = 0; i < products.length; i++) {
             let subtotal = 0;
             const result = await connection.execute(
                 `SELECT price FROM RESTAURANTITEMS WHERE productId=:productId`,
                 [products[i].productId],
-                {outFormat: oracledb.OUT_FORMAT_OBJECT}
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
             const price = result.rows[0].PRICE;
             subtotal += price * products[i].quantity;
             await connection.execute(
                 `INSERT INTO ORDER_DETAILS (OrderID, ProductID, Quantity, Subtotal) values (:orderId, :productId, :quantity, :subtotal)`,
                 [orderId, products[i].productId, products[i].quantity, subtotal],
-                {autoCommit: true}
+                { autoCommit: true }
             )
         }
-        connection.close(); 
+        connection.close();
         return res.status(200).json({
-            'status':'success',
-            'message':'Order Placed Successfully!',
-            'orderId':orderId
+            'status': 'success',
+            'message': 'Order Placed Successfully!',
+            'orderId': orderId
         });
     }
     catch (err) {
         console.log(`Error from placeOrder function ${err}`);
         return res.status(500).json({
-            'status':'error',
-            'message':'This is an issue from our end please try again later!'
+            'status': 'error',
+            'message': 'This is an issue from our end please try again later!'
         })
     }
-    
+
 }
 
-const getOrderHistory = async (req,res) => {
-    const {userId} = req.user;
+const getOrderHistory = async (req, res) => {
+    const { userId } = req.user;
     try {
         const connection = await getConnection();
         const result = await connection.execute(
@@ -378,65 +383,72 @@ const getOrderHistory = async (req,res) => {
              ORDER BY OrderTimeDate DESC
              FETCH FIRST 10 ROWS ONLY`,
             [userId],
-            {outFormat: oracledb.OUT_FORMAT_OBJECT}
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
         connection.close();
         if (result.rows.length === 0) {
             return res.status(404).json({
-                'status':'failed',
-                'message':'No Order History Found!'
+                'status': 'failed',
+                'message': 'No Order History Found!'
             })
         }
         return res.status(200).json({
-            'status':'success',
-            'message':'Details Fetched Successfully!',
-            'data':result.rows
+            'status': 'success',
+            'message': 'Details Fetched Successfully!',
+            'data': result.rows
 
         })
     }
-    catch(err) {
+    catch (err) {
         console.log(`Error from getOrderHistory function ${err}`);
         return res.status(500).json({
-            'status':'error',
-            'message':'This is an issue from our end please try again later!'
+            'status': 'error',
+            'message': 'This is an issue from our end please try again later!'
         })
     }
 }
 
-const getOrderDetails = async (req,res) => {
-    const {orderId} = req.body;
+const getOrderDetails = async (req, res) => {
+    const { orderId } = req.body;
+    const { userId } = req.user;
     if (!orderId) {
         return res.status(400).json({
-            'status':'error',
-            'message':'Please provide an Order ID!'
+            'status': 'error',
+            'message': 'Please provide an Order ID!'
         })
     }
     try {
         const connection = await getConnection();
         const result = await connection.execute(
-            `SELECT RESTAURANTS.RestaurantName, OrderTimeDate, OrderStatus, PRODUCTS.NAME, ORDER_DETAILS.Quantity,
+            `SELECT RESTAURANTS.RestaurantName, OrderTimeDate, OrderStatus, RESTAURANTITEMS.NAME, ORDER_DETAILS.Quantity,
              ORDER_DETAILS.SUBTOTAL, GRANDTOTAL
              FROM ORDERS
              inner join RESTAURANTS ON ORDERS.RestaurantID = RESTAURANTS.RestaurantID
              inner join ORDER_DETAILS ON ORDERS.OrderID = ORDER_DETAILS.OrderID
              inner join RESTAURANTITEMS ON ORDER_DETAILS.ProductID = RESTAURANTITEMS.ProductID
-             WHERE ORDERS.OrderID=:orderId`,
-            [orderId],
-            {outFormat: oracledb.OUT_FORMAT_OBJECT}
+             WHERE ORDERS.OrderID=:orderId AND ORDERS.UserID=:userId`,
+            [orderId, userId],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
         connection.close();
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                'status': 'failed',
+                'message': 'No Order Details Found or You do not have access to this'
+            })
+        }
         return res.status(200).json({
-            'status':'success',
-            'message':'Details Fetched Successfully!',
-            'data':result.rows
+            'status': 'success',
+            'message': 'Details Fetched Successfully!',
+            'data': result.rows
 
         })
     }
-    catch(err) {
+    catch (err) {
         console.log(`Error from getOrderDetails function ${err}`);
         return res.status(500).json({
-            'status':'error',
-            'message':'This is an issue from our end please try again later!'
+            'status': 'error',
+            'message': 'This is an issue from our end please try again later!'
         })
     }
 }
@@ -452,7 +464,7 @@ const formatDatetime = (datetime) => {
     const minutes = String(datetime.getMinutes()).padStart(2, '0');
     const seconds = String(datetime.getSeconds()).padStart(2, '0');
     const milliseconds = String(datetime.getMilliseconds()).padStart(3, '0');
-  
+
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
 }
 

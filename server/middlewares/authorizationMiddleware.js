@@ -6,30 +6,37 @@ const authorize = (req, res, next) => {
     if (!token) {
         return res.status(401).json({ 
             'status': 'error',
-            'message': 'Unauthorized',
+            'message': 'Unauthorized, you need to login first',
             'redirectUrl': '/login'
         });
     }
     jwt.verify(token, secretKey, (err, decoded) => {
         if (err) {
-            return res.status(401).json({ "error": 'Unauthorized' });
+            return res.status(401).json({
+                'status': 'error', 
+                'message': 'Please login again / Session expired'
+            });
         }
         req.user=decoded;
-        console.log(req.user);
         next();
     });
 }
 
 const isUser = (req, res, next) => {
     if (req.user.role !== 'user') {
-        return res.status(401).json({ 'error': 'Unauthorized' });
+        return res.status(401).json({
+            'status': 'error', 
+            'message': 'Only users can access this' });
     }
     next();
 }
 
 const isAdmin = (req, res, next) => {
     if (req.user.role !== 'admin') {
-        return res.status(401).json({ 'error': 'Unauthorized' });
+        return res.status(401).json({ 
+            'status': 'error',
+            'message': 'Only admins can access this'
+        });
     }
     next();
 }

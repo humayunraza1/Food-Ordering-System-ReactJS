@@ -19,10 +19,10 @@ Router.post('/placeOrder', authorize, isUser, placeOrder); //
 Router.get('/user-details', authorize, isUser, displayUserDetails);
 Router.get('/logout', authorize, isUser, logout);
 
-Router.get('/home', authorize, isUser, browseRestaurants); // 
-Router.get('/searchRestaurant', authorize, isUser, searchRestaurant); //
+// Router.get('/home', authorize, isUser, browseRestaurants); // 
+// Router.get('/searchRestaurant', authorize, isUser, searchRestaurant); //
+// Router.get('/browseProducts', authorize, isUser, browseProducts); // 
 
-Router.get('/browseProducts', authorize, isUser, browseProducts); // 
 Router.get('/orderHistory', authorize, isUser, getOrderHistory); // 
 
 Router.get('/orderDetails', authorize, isUser, getOrderDetails); // 

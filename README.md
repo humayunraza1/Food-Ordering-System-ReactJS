@@ -26,6 +26,10 @@ If password then 'oldpassword' 'newpassword'. for name use 'fullName'. 'address'
 
 LOGIN SAME FOR BOTH ADMIN AND USER
 
+## ./users/home: GET
+
+
+
 # Admin Routes
 
 ## ./admin/admin-dashboard: GET
