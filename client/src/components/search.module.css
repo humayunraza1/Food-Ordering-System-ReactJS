@@ -1,0 +1,25 @@
+.inputWrapper {
+  display: flex;
+  column-gap: 10px;
+  max-width: 550px;
+  height: 50px;
+  background-color: white;
+  border-radius: 10px;
+  border-top-right-radius: 40px;
+  border-bottom-right-radius: 40px;
+  padding: 10px;
+  align-items: center;
+}
+
+input {
+  outline-style: none;
+  border-style: none;
+  width: 450px;
+  height: 50px;
+  font-size: 1.5rem;
+  background-color: transparent;
+}
+
+input:focus {
+  outline-style: none;
+}
