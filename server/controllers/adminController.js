@@ -19,9 +19,9 @@ const adminDetails = async (req, res) => {
             [],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
-        
+
         const result3 = await connection.execute(
-            `SELECT OrderID, OrderStatus FROM ORDERS ORDER BY DESC FETCH FIRST 15 ROWS ONLY`,
+            `SELECT OrderID, OrderStatus FROM ORDERS ORDER BY OrderTimeDate DESC FETCH FIRST 15 ROWS ONLY`,
             [],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
@@ -30,16 +30,16 @@ const adminDetails = async (req, res) => {
         const restaurantData = result2.rows;
         connection.close();
         return res.status(200).json({
-            'status':'success',
-            'message':'Dashboard Details',
-            'data':{
+            'status': 'success',
+            'message': 'Dashboard Details',
+            'data': {
                 'users': userData,
                 'restaurants': restaurantData,
-                'order':result3.rows
+                'order': result3.rows
             }
         })
 
-    } catch(err) {
+    } catch (err) {
         console.log(`Error from adminDetails function: ${err}`);
         return res.status(500).json({
             'status': 'error',
@@ -51,70 +51,83 @@ const adminDetails = async (req, res) => {
 
 const searchUser = async (req, res) => {
     let { email, phone_number } = req.body;
-    
+
     if (email) {
         email = email.toLowerCase();
-        const user = await searchByEmail('USERS',email);
-        
-        return res.status(200).json({
-            'status': 'success',
-            'message': 'User Found',
-            'data': user
-        })
+        const user = await searchByEmail('USERS', email);
+
+        if (user) {
+            return res.status(200).json({
+                'status': 'success',
+                'message': 'User Found',
+                'data': user
+            })
+        }
     }
     if (phone_number) {
-        const user = await searchByNumber('USERS',phone_number);
-        return res.status(200).json({
-            'status': 'success',
-            'message': 'User Found',
-            'data': user
-        })
+        const user = await searchByNumber('USERS', phone_number);
+        if (user) {
+            return res.status(200).json({
+                'status': 'success',
+                'message': 'User Found',
+                'data': user
+            })
+        }
     }
+    return res.status(404).json({
+        'status': 'error',
+        'message': 'User Not Found!'
+    })
 
 }
 
 const searchRestaurant = async (req, res) => {
     let { email, phone_number } = req.body;
-    
+
     if (email) {
         email = email.toLowerCase();
-        const restaurant = await searchByEmail('RESTAURANTS',email);
-        return res.status(200).json({
-            'status': 'success',
-            'message': 'Restaurant Found',
-            'data': restaurant
-        })
+        const restaurant = await searchByEmail('RESTAURANTS', email);
+        if (restaurant) {
+            return res.status(200).json({
+                'status': 'success',
+                'message': 'Restaurant Found',
+                'data': restaurant
+            })
+        }
     }
     if (phone_number) {
-        const restaurant = await searchByNumber('RESTAURANTS',phone_number);
-        return res.status(200).json({
-            'status': 'success',
-            'message': 'Restaurant Found',
-            'data': restaurant
-        })
+        const restaurant = await searchByNumber('RESTAURANTS', phone_number);
+        if (restaurant) {
+            return res.status(200).json({
+                'status': 'success',
+                'message': 'Restaurant Found',
+                'data': restaurant
+            })
+        }
     }
 
 }
 
-const addRestaurants = async (req,res) => {
-    const {email, password, restaurantName, address, phone_number, website} = req.body;
+const addRestaurants = async (req, res) => {
+    let { email, password, restaurantName, address, phone_number, website } = req.body;
     try {
+        restaurantName = restaurantName.toUpperCase();
         const connection = await getConnection();
         const hashedPassword = await bcrypt.hash(password, 10);
         const result = await connection.execute(
             `INSERT INTO RESTAURANTS (email, password, restaurantName, address, phone_number, website) VALUES (:email, :password, :restaurantName, :address, :phone_number, :wesbite)`,
             [email, hashedPassword, restaurantName, address, phone_number, website],
-            { outFormat: oracledb.OUT_FORMAT_OBJECT },
-        
+            { autoCommit: true }
+
         );
         connection.close();
         return res.status(200).json({
-            'status':'success',
-            'message':'Restaurant Added Successfully!'
+            'status': 'success',
+            'message': 'Restaurant Added Successfully!'
         })
 
     } catch (err) {
-        console.log(`Error from addRestaurant function ${err}`);
+        console.log(`Error from addRestaurants function ${err}`);
         return res.status(500).json({
             'status': 'error',
             'message': 'This is an issue from our end please try again later!'
@@ -122,20 +135,20 @@ const addRestaurants = async (req,res) => {
     }
 }
 
-const removeUser = async (req,res) => {
-    const {UserID} = req.body;
+const removeUser = async (req, res) => {
+    const { UserID } = req.body;
     try {
         const connection = await getConnection();
         const result = await connection.execute(
             `DELETE FROM USERS WHERE UserID=:UserID`,
             [UserID],
-            {autoCommit: true}
+            { autoCommit: true }
 
         );
         connection.close();
         return res.status(200).json({
-            'status':'success',
-            'message':'User Removed Successfully!'
+            'status': 'success',
+            'message': 'User Removed Successfully!'
         })
 
     } catch (err) {
@@ -147,19 +160,19 @@ const removeUser = async (req,res) => {
     }
 }
 
-const removeRestaurant = async (req,res) => {
-    const {RestaurantID} = req.body;
+const removeRestaurant = async (req, res) => {
+    const { RestaurantID } = req.body;
     try {
         const connection = await getConnection();
         const result = await connection.execute(
             `DELETE FROM RESTAURANTS WHERE RestaurantID=:RestaurantID`,
             [RestaurantID],
-            {autoCommit: true}
+            { autoCommit: true }
         );
         connection.close();
         return res.status(200).json({
-            'status':'success',
-            'message':'Restaurant Removed Successfully!'
+            'status': 'success',
+            'message': 'Restaurant Removed Successfully!'
         })
 
     } catch (err) {
@@ -184,6 +197,7 @@ const searchByEmail = async (table, email) => {
 
         const data = result.rows;
         connection.close();
+        if (data.length === 0) { return undefined; }
         return data;
 
     } catch (err) {
@@ -207,6 +221,7 @@ const searchByNumber = async (table, phone_number) => {
 
         const user = result.rows;
         connection.close();
+        if (user.length === 0) { return undefined; }
         return user;
 
     } catch (err) {

@@ -12,13 +12,12 @@ const authorize = (req, res, next) => {
     }
     jwt.verify(token, secretKey, (err, decoded) => {
         if (err) {
-            console.log('Verify error');
-          return res.status(401).json({ "error": 'Unauthorized' });
+            return res.status(401).json({ "error": 'Unauthorized' });
         }
-        req.user=decoded; // 'user':{'userid':userid, 'role':role}
+        req.user=decoded;
+        console.log(req.user);
+        next();
     });
-    
-    next();
 }
 
 const isUser = (req, res, next) => {

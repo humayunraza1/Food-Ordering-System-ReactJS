@@ -12,13 +12,12 @@ const restaurantAuthorization = (req, res, next) => {
     }
     jwt.verify(token, secretKey, (err, decoded) => {
         if (err) {
-            console.log('Verify error');
-          return res.status(401).json({ "error": 'Unauthorized' });
+            return res.status(401).json({ "error": 'Unauthorized' });
         }
-        req.restaurant=decoded; // 'user':{'userid':userid, 'role':role}
+        req.restaurant=decoded; 
+        next();
     });
     
-    next();
 }
 
 module.exports = {

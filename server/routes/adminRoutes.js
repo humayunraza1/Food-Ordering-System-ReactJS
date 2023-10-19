@@ -3,7 +3,7 @@ const Router = express.Router();
 const {authorize, isAdmin} = require('../middlewares/authorizationMiddleware.js');
 const adminController = require('../controllers/adminController.js');
 
-Router.get('/admin-dashboard', authorize, isAdmin, adminController.adminDetails);
+Router.get('/admin-dashboard', authorize, isAdmin, adminController.adminDetails); //
 
 Router.get('/search-user', authorize, isAdmin, adminController.searchUser);
 

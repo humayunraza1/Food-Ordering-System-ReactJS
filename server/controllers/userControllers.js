@@ -2,7 +2,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { getConnection } = require('../connection.js');
 const secretKey = process.env.JWT_SECRET_KEY;
-const oracledb = require('oracledb')
+const oracledb = require('oracledb');
+
+const nodemailer = require('nodemailer');
+
+const otpStorage = {};
 
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 const phoneNumberRegex = /^\d{11}$/;
@@ -58,7 +62,6 @@ const register = async (req, res) => {
     }
 }
 
-
 const login = async (req, res) => {
     let { email, password } = req.body;
     email = email.toLowerCase();
@@ -82,7 +85,7 @@ const login = async (req, res) => {
                 redirectUrl = '/admin/admin-dashboard';
             }
             else if (user.ROLE === 'user') {
-                redirectUrl = '/users/user-details';
+                redirectUrl = '/users/home';
             }
             return res.status(200).json({
                 'status': 'success',
@@ -119,11 +122,10 @@ const logout = async (req, res) => {
 
 const displayUserDetails = async (req, res) => {
     const { userId } = req.user;
-    // console.log(userId);
     try {
         const connection = await getConnection();
         const result = await connection.execute(
-            `SELECT fullName, email, phone_number, address FROM USERS WHERE UserID=:UserID`,
+            `SELECT fullName, email, phone_number, address, VERIFIED FROM USERS WHERE UserID=:UserID`,
             [userId],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
@@ -249,17 +251,23 @@ const searchRestaurant = async(req,res) => {
     name = name.toUpperCase();
     try {
         const connection = await getConnection();
+        const query = `SELECT RestaurantID, email, RestaurantName, address, phone_number, website FROM RESTAURANTS WHERE RestaurantName LIKE '%' || :name || '%'`;
         const result = await connection.execute(
-            `SELECT RestaurantID, email, RestaurantName, address, phone_number, website FROM RESTAURANTS WHERE name LIKE '%' || :name || '%'`,
+            query,
             [name],
             {outFormat: oracledb.OUT_FORMAT_OBJECT}
         );
         connection.close();
+        if (result.rows.length !== 0) {
         return res.status(200).json({
             'status':'success',
             'message':'Details Fetched Successfully!',
             'data':result.rows
 
+        })}
+        return res.status(404).json({
+            'status':'failed',
+            'message':'No Restaurant Found!'
         })
     } catch(err) {
         console.log(`Error from searchRestaurant function ${err}`);
@@ -280,6 +288,12 @@ const browseProducts = async (req,res) => {
             {outFormat: oracledb.OUT_FORMAT_OBJECT}
         );
         connection.close();
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                'status':'failed',
+                'message':'No Products Found!'
+            })
+        }
         return res.status(200).json({
             'status':'success',
             'message':'Details Fetched Successfully!',
@@ -367,6 +381,12 @@ const getOrderHistory = async (req,res) => {
             {outFormat: oracledb.OUT_FORMAT_OBJECT}
         );
         connection.close();
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                'status':'failed',
+                'message':'No Order History Found!'
+            })
+        }
         return res.status(200).json({
             'status':'success',
             'message':'Details Fetched Successfully!',
@@ -385,6 +405,12 @@ const getOrderHistory = async (req,res) => {
 
 const getOrderDetails = async (req,res) => {
     const {orderId} = req.body;
+    if (!orderId) {
+        return res.status(400).json({
+            'status':'error',
+            'message':'Please provide an Order ID!'
+        })
+    }
     try {
         const connection = await getConnection();
         const result = await connection.execute(
@@ -415,6 +441,7 @@ const getOrderDetails = async (req,res) => {
     }
 }
 
+// -----------------------------------------------------------HELPERS-----------------------------------------------------------
 
 
 const formatDatetime = (datetime) => {

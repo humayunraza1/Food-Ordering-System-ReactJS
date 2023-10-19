@@ -12,12 +12,13 @@ const restaurantLogin = async (req, res) => {
     try {
         const connection = await getConnection();
         const result = await connection.execute(
-            `SELECT email, password FROM RESTAURANTS WHERE email=:email`,
+            `SELECT RestaurantID, email, password FROM RESTAURANTS WHERE email=:email`,
             [email],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
 
         const RESTAURANTS = result.rows[0];
+        console.log(RESTAURANTS);
 
         if (RESTAURANTS && (await bcrypt.compare(password, RESTAURANTS.PASSWORD))) {
             const token = jwt.sign({ restaurantId: RESTAURANTS.RESTAURANTID }, secretKey, {
@@ -27,7 +28,8 @@ const restaurantLogin = async (req, res) => {
             return res.status(200).json({
                 'status':'success',
                 'message':'Login Successful!',
-                'token':token
+                'token':token,
+                'redirectUrl':'/restaurants/getRecentOrders'
             })
         }
         else {
@@ -53,11 +55,11 @@ const addProduct = async (req,res) => {
     name = name.toUpperCase();
     try {
         const connection = await getConnection();
-        const result = await connection.execute(
+        await connection.execute(
             `INSERT INTO RESTAURANTITEMS (restaurantId, name, description, Category, price) VALUES (:restaurantId, :name, 
                 :description, :Category, :price)`,
             [restaurantId, name, Category, description, price],
-            {outFormat: oracledb.OUT_FORMAT_OBJECT}
+            {autoCommit: true}
         );
         connection.close();
         return res.status(200).json({
@@ -88,6 +90,12 @@ const searchProduct = async (req,res) => {
             {outFormat: oracledb.OUT_FORMAT_OBJECT}
         );
         connection.close();
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                'status':'failed',
+                'message':'No Products Found!'
+            })
+        }
         return res.status(200).json({
             'status':'success',
             'message':'Details Fetched Successfully!',
@@ -138,6 +146,7 @@ const getRecentOrders = async (req,res) => {
             {outFormat: oracledb.OUT_FORMAT_OBJECT}
         );
         connection.close();
+        
         return res.status(200).json({
             'status':'success',
             'message':'Details Fetched Successfully!',
