@@ -16,24 +16,24 @@ const register = async (req, res) => {
     email = email.toLowerCase();
 
 
-    if (password.length < 6) {
-        return res.status(400).json({
-            'status': 'error',
-            'message': 'Password should be 6 characters or more'
-        });
-    }
-    if (!emailRegex.test(email)) {
-        return res.status(400).json({
-            'status': 'error',
-            'message': 'Invalid email format'
-        });
-    }
-    if (!phoneNumberRegex.test(phoneNumber)) {
-        return res.status(400).json({
-            'status': 'error',
-            'message': 'Invalid phone number format (should be 11 digits)'
-        });
-    }
+    // if (password.length < 6) {
+    //     return res.status(400).json({
+    //         'status': 'error',
+    //         'message': 'Password should be 6 characters or more'
+    //     });
+    // }
+    // if (!emailRegex.test(email)) {
+    //     return res.status(400).json({
+    //         'status': 'error',
+    //         'message': 'Invalid email format'
+    //     });
+    // }
+    // if (!phoneNumberRegex.test(phoneNumber)) {
+    //     return res.status(400).json({
+    //         'status': 'error',
+    //         'message': 'Invalid phone number format (should be 11 digits)'
+    //     });
+    // }
     try {
 
         const connection = await getConnection();
@@ -246,38 +246,38 @@ const browseRestaurants = async (req, res) => {
     }
 }
 
-// const searchRestaurant = async (req, res) => {
-//     let { name } = req.body;
-//     name = name.toUpperCase();
-//     try {
-//         const connection = await getConnection();
-//         const query = `SELECT RestaurantID, email, RestaurantName, address, phone_number, website FROM RESTAURANTS WHERE RestaurantName LIKE '%' || :name || '%'`;
-//         const result = await connection.execute(
-//             query,
-//             [name],
-//             { outFormat: oracledb.OUT_FORMAT_OBJECT }
-//         );
-//         connection.close();
-//         if (result.rows.length !== 0) {
-//             return res.status(200).json({
-//                 'status': 'success',
-//                 'message': 'Details Fetched Successfully!',
-//                 'data': result.rows
+const searchRestaurant = async (req, res) => {
+    let { name } = req.body;
+    name = name.toUpperCase();
+    try {
+        const connection = await getConnection();
+        const query = `SELECT RestaurantID, email, RestaurantName, address, phone_number, website FROM RESTAURANTS WHERE RestaurantName LIKE '%' || :name || '%'`;
+        const result = await connection.execute(
+            query,
+            [name],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        connection.close();
+        if (result.rows.length !== 0) {
+            return res.status(200).json({
+                'status': 'success',
+                'message': 'Details Fetched Successfully!',
+                'data': result.rows
 
-//             })
-//         }
-//         return res.status(404).json({
-//             'status': 'failed',
-//             'message': 'No Restaurant Found!'
-//         })
-//     } catch (err) {
-//         console.log(`Error from searchRestaurant function ${err}`);
-//         return res.status(500).json({
-//             'status': 'error',
-//             'message': 'This is an issue from our end please try again later!'
-//         })
-//     }
-// }
+            })
+        }
+        return res.status(404).json({
+            'status': 'failed',
+            'message': 'No Restaurant Found!'
+        })
+    } catch (err) {
+        console.log(`Error from searchRestaurant function ${err}`);
+        return res.status(500).json({
+            'status': 'error',
+            'message': 'This is an issue from our end please try again later!'
+        })
+    }
+}
 
 const browseProducts = async (req, res) => {
     const { restaurantId } = req.body;
@@ -328,17 +328,13 @@ const placeOrder = async (req, res) => {
         }
         const orderStatus = 'Processing';
         const orderDate = formatDatetime(new Date());
-        console.log(orderDate);
-        let insertResult = await connection.execute(
-            `INSERT INTO ORDERS (UserID, RestaurantID, OrderTimeDate, OrderStatus, GRANDTOTAL) 
-             values (:userId, :restaurantId, TO_TIMESTAMP(:orderDate, 'YYYY-MM-DD HH24:MI:SS.FF3'), :orderStatus, :total)
-             RETURNING OrderID INTO :orderId`,
-            { userId, restaurantId, orderDate, orderStatus, total, orderId: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER } },
+        const result = await connection.execute(
+            `INSERT INTO ORDERS (UserID, RestaurantID, OrderTimeDate, OrderStatus, GRANDTOTAL) values (:userId, :restaurantId, :orderDate, :orderStatus,
+                 :total)`,
+            [userId, restaurantId, orderDate, orderStatus, total],
             { autoCommit: true }
         );
-        
-        
-        const orderId = insertResult.outBinds.orderId[0];
+        const orderId = result.rows[0].ORDERID;
         for (let i = 0; i < products.length; i++) {
             let subtotal = 0;
             const result = await connection.execute(
@@ -410,7 +406,6 @@ const getOrderHistory = async (req, res) => {
 
 const getOrderDetails = async (req, res) => {
     const { orderId } = req.body;
-    const { userId } = req.user;
     if (!orderId) {
         return res.status(400).json({
             'status': 'error',
@@ -426,8 +421,8 @@ const getOrderDetails = async (req, res) => {
              inner join RESTAURANTS ON ORDERS.RestaurantID = RESTAURANTS.RestaurantID
              inner join ORDER_DETAILS ON ORDERS.OrderID = ORDER_DETAILS.OrderID
              inner join RESTAURANTITEMS ON ORDER_DETAILS.ProductID = RESTAURANTITEMS.ProductID
-             WHERE ORDERS.OrderID=:orderId AND ORDERS.UserID=:userId`,
-            [orderId, userId],
+             WHERE ORDERS.OrderID=:orderId`,
+            [orderId],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
         connection.close();
