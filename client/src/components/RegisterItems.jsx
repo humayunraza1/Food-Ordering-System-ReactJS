@@ -1,4 +1,4 @@
-import { Fab, Zoom } from "@mui/material";
+import { Button, Fab, Zoom } from "@mui/material";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DoneIcon from '@mui/icons-material/Done';
@@ -12,9 +12,13 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import TextField from '@mui/material/TextField';
 import FilledInput from '@mui/material/FilledInput';
 import InputAdornment from '@mui/material/InputAdornment';
-import { purple } from '@mui/material/colors';
+import { purple, lightGreen, red } from '@mui/material/colors';
 import { useEffect, useState, useCallback } from "react";
 import styles from "./registerItems.module.css";
+import CircularProgress from '@mui/material/CircularProgress';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { useNavigate } from "react-router-dom";
 
 const btnStyle = {
     color: 'common.white',
@@ -67,8 +71,9 @@ function RegisterItems({ formStage, setStage }) {
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const [accDetails, setDetails] = useState({ Name: "", Email: "", Password: "", Number: 0, Address: "" });
-    // const [passStrength, setStrength] = useState({ oneNumber: false, eightChar: false, specialChar: false })
-    const [Status, setStatus] = useState({ Error: false, msg: "" });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState({ isError: false, msg: "" });
+    const [success, setSuccess] = useState(false);
     const [showNext, setNext] = useState(false);
     const [isEigColor, setEIGColor] = useState("red");
     const [oneSPColor, setSPColor] = useState("red");
@@ -77,6 +82,7 @@ function RegisterItems({ formStage, setStage }) {
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
+    const navigate = useNavigate();
     const handleInput = (e) => {
         e.target.value = e.target.value.replace(/\D/g, '');
     };
@@ -202,28 +208,54 @@ function RegisterItems({ formStage, setStage }) {
     }
     async function completeForm(e) {
         e.preventDefault();
+        setStage(2);
+        setNext(false);
         const fullName = accDetails.Name;
         const email = accDetails.Email;
         const password = accDetails.Password;
         const phoneNumber = accDetails.Number;
         const address = accDetails.Address;
+        if (!loading) {
+            setSuccess(false);
+            setLoading(true);
+        }
+        try {
+            const res = await fetch("http://localhost:3001/users/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    fullName,
+                    email,
+                    password,
+                    phoneNumber,
+                    address
+                })
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                setTimeout(function () {
+                    setLoading(false);
+                    setSuccess(true);
+                }, 5000)
+            }
+            console.log(data);
+            if (data.status === 'error' || !data) {
+                setTimeout(function () {
+                    setLoading(false)
+                    setError({ isError: true, msg: data.message });
+                }, 5000)
+            }
+        } catch (err) {
+            if (err) {
+                setTimeout(function () {
+                    setLoading(false)
+                    setError({ isError: true, msg: "Please try again later." });
+                }, 5000)
+            }
+        }
 
-        const res = await fetch("http://localhost:3001/users/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                fullName,
-                email,
-                password,
-                phoneNumber,
-                address
-            })
-        });
-
-        const data = await res.json();
-        console.log(data);
     }
     const handleFocusPassword = () => {
         setPasswordFocused(true);
@@ -242,6 +274,9 @@ function RegisterItems({ formStage, setStage }) {
     useEffect(() => {
         memoizedCheckEverything();
     }, [memoizedCheckEverything]);
+
+
+
     return (
         <>
             {formStage === 0 &&
@@ -345,9 +380,27 @@ function RegisterItems({ formStage, setStage }) {
                     />
                 </>
             }
+            {formStage === 2 && loading && <div className={styles.finishContainer}>
+                <CircularProgress color="secondary" />
+            </div>}
+            {formStage === 2 && success && <div className={styles.finishContainer}>
+                <div className={styles.iconContainer}>
+                    <CheckCircleOutlineIcon fontSize="large" sx={{ color: lightGreen['A400'] }} />
+                </div>
+                <h2>Account Created</h2>
+                <p>You can now login.</p>
+                <Button sx={btnStyle} onClick={() => navigate('/login')}>Login</Button>
+            </div>}
+            {formStage === 2 && error.isError && <div className={styles.finishContainer}>
+                <div className={styles.iconContainer}>
+                    <ErrorOutlineIcon fontSize="large" sx={{ color: red['A700'] }} />
+                </div>
+                <h2>Error</h2>
+                <p>{error.msg}</p>
+                <Button sx={btnStyle} onClick={() => window.location.reload()}>Register</Button>
+            </div>}
             <div className={formStage > 0 ? styles.btndiv2 : styles.btndiv}>
                 {formStage === 1 &&
-
                     <Fab variant="contained" onClick={handleBefore} sx={btnStyle}><ArrowBackIcon /></Fab>
                 }
                 {showNext && <Zoom in={showNext}>
