@@ -159,7 +159,7 @@ const removeProduct = async (req,res) => {
     const {productid} = req.query;
     try {
         const connection = await getConnection();
-        const result = await connection.execute(
+        await connection.execute(
             `DELETE FROM RESTAURANTITEMS WHERE restaurantId=:restaurantId AND productId=:productid`,
             [restaurantId, productid],
             {autoCommit: true}
@@ -231,7 +231,7 @@ const changeOrderStatus = async (req,res) => {
         if (currStatus === 'In Progress') {
             await connection.execute(
                 `UPDATE ORDERS SET OrderStatus='Delivered' WHERE restaurantId=:restaurantId AND orderId=:orderId`,
-                [restaurantId, orderId],
+                [restaurantId, orderid],
                 {autoCommit: true}
             );
             currStatus = 'Delivered';
@@ -239,7 +239,7 @@ const changeOrderStatus = async (req,res) => {
         else if (currStatus === 'Processing') {
             await connection.execute(
                 `UPDATE ORDERS SET OrderStatus='In Progress' WHERE restaurantId=:restaurantId AND orderId=:orderId`,
-                [restaurantId, orderId],
+                [restaurantId, orderid],
                 {autoCommit: true}
             );
             currStatus = 'In Progress';
