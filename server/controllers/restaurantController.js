@@ -8,6 +8,13 @@ const oracledb = require('oracledb')
 
 const restaurantLogin = async (req, res) => {
     let { email, password } = req.body;
+    if (!email || !password) {
+        console.log(`Restaurant didnt fill all login details (restaurantController/restaurantLogin)`);
+        return res.status(400).json({
+            'status': 'failed',
+            'message': 'Please enter all the details!'
+        })
+    }
     email = email.toLowerCase();
     try {
         const connection = await getConnection();
@@ -51,14 +58,21 @@ const restaurantLogin = async (req, res) => {
 
 const addProduct = async (req,res) => {
     const {restaurantId} = req.restaurant;
-    let {name, description, Category, price} = req.body;
+    let {name, description, category, price} = req.body;
+    if (!name || !description || !category || !price) {
+        console.log(`Restaurant didnt fill all product details (restaurantController/addProduct)`);
+        return res.status(400).json({
+            'status':'failed',
+            'message':'Please enter all the details!'
+        })
+    }
     name = name.toUpperCase();
     try {
         const connection = await getConnection();
         await connection.execute(
             `INSERT INTO RESTAURANTITEMS (restaurantId, name, description, Category, price) VALUES (:restaurantId, :name, 
-                :description, :Category, :price)`,
-            [restaurantId, name, Category, description, price],
+                :description, :category, :price)`,
+            [restaurantId, name, category, description, price],
             {autoCommit: true}
         );
         connection.close();
@@ -79,7 +93,36 @@ const addProduct = async (req,res) => {
 
 const searchProduct = async (req,res) => {
     const {restaurantId} = req.restaurant;
-    let {name} = req.body;
+    let {name} = req.query;
+    if (!name) {
+        try {
+            const connection = await getConnection();
+            const result = await connection.execute(
+                `SELECT * FROM RESTAURANTITEMS WHERE restaurantId=:restaurantId`,
+                [restaurantId],
+                {outFormat: oracledb.OUT_FORMAT_OBJECT}
+            );
+            connection.close();
+            if (result.rows.length === 0) {
+                return res.status(404).json({
+                    'status':'failed',
+                    'message':'No Products Found!'
+                })
+            }
+            return res.status(200).json({
+                'status':'success',
+                'message':'Details Fetched Successfully!',
+                'data':result.rows
+            })
+
+        } catch (err) {
+            console.log(`Error from searchProduct function ${err}`);
+            return res.status(500).json({
+                'status': 'error',
+                'message': 'This is an issue from our end please try again later!'
+            })
+        }
+    }
     name = name.toUpperCase();
     try{
         const query = `SELECT * FROM RESTAURANTITEMS WHERE restaurantId=:restaurantId AND name LIKE '%' || :name || '%'`;
@@ -113,12 +156,12 @@ const searchProduct = async (req,res) => {
 
 const removeProduct = async (req,res) => {
     const {restaurantId} = req.restaurant;
-    const {productId} = req.body;
+    const {productid} = req.query;
     try {
         const connection = await getConnection();
         const result = await connection.execute(
-            `DELETE FROM RESTAURANTITEMS WHERE restaurantId=:restaurantId AND productId=:productId`,
-            [restaurantId, productId],
+            `DELETE FROM RESTAURANTITEMS WHERE restaurantId=:restaurantId AND productId=:productid`,
+            [restaurantId, productid],
             {autoCommit: true}
         );
         connection.close();
@@ -169,12 +212,12 @@ const getRecentOrders = async (req,res) => {
 
 const changeOrderStatus = async (req,res) => {
     const {restaurantId} = req.restaurant;
-    const {orderId} = req.body;
+    const {orderid} = req.body;
     try {
         const connection = await getConnection();
         let result = await connection.execute(
-            `SELECT OrderStatus FROM ORDERS WHERE restaurantId=:restaurantId AND orderId=:orderId AND OrderStatus = 'Processing' OR OrderStatus = 'In Progress'`,
-            [restaurantId, orderId],
+            `SELECT OrderStatus FROM ORDERS WHERE restaurantId=:restaurantId AND orderId=:orderid AND OrderStatus = 'Processing' OR OrderStatus = 'In Progress'`,
+            [restaurantId, orderid],
             {outFormat: oracledb.OUT_FORMAT_OBJECT}
         );
         if (result.rows.length === 0) {
