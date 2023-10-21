@@ -1,0 +1,35 @@
+.btndiv {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: end;
+  width: 380px;
+}
+.btndiv2 {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: space-between;
+  width: 380px;
+}
+
+.visible {
+  opacity: 1;
+  display: block;
+  transform: translateY(0);
+  transition: opacity 3s ease, transform 3s ease;
+  text-align: start;
+  line-height: 30px;
+  width: 220px;
+  margin-left: 10px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.8rem;
+}
+
+/* Hide the element by default */
+.passStrength {
+  opacity: 0;
+  display: none;
+  transform: translateY(-20px);
+  transition: opacity 3s ease, transform 3s ease;
+}

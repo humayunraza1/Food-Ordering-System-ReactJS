@@ -38,5 +38,6 @@
 }
 
 .btn {
-  margin-right: 50px;
+  position: relative;
+  right: 50px;
 }

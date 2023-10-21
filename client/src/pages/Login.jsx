@@ -1,12 +1,14 @@
-import styles from "./login.module.css"
 import LoginForm from "../components/LoginForm"
+import styles from "./login.module.css"
+
 
 function Login() {
     return (
-        <div className={styles.loginPage}>
+        <div>
             <LoginForm />
         </div>
     )
 }
+
 
 export default Login
