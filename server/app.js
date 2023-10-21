@@ -14,10 +14,9 @@ app.use(express.json());
 app.use(cors({ origin: 'http://localhost:3000' }))
 
 
-app.get('/', browseRestaurants)
-app.get('/getproducts', browseProducts)
+app.get('/', browseRestaurants)         // /
+app.get('/restaurant', browseProducts) // /restaurant?restaurantID=1
 
-// {"restaurantID": 1} 
 
 app.use('/users', userRoutes);
 app.use('/admin', adminRoutes);

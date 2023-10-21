@@ -6,13 +6,14 @@ const {restaurantLogin, addProduct, searchProduct, getRecentOrders,
 const {restaurantAuthorization} = require('../middlewares/restaurantAuth.js');
 
 
-Router.post('/login', validateLogin, restaurantLogin);
-Router.post('/addProduct', restaurantAuthorization, addProduct); //
+Router.post('/login', validateLogin, restaurantLogin);                                  // /restaurants/login   pass email and password in body
 
-Router.get('/searchProduct', restaurantAuthorization, searchProduct); //
-Router.get('/getRecentOrders', restaurantAuthorization, getRecentOrders); // 
-Router.put('/updateOrderStatus', restaurantAuthorization, changeOrderStatus); //
+Router.post('/products', restaurantAuthorization, addProduct);                          // /restaurants/products 
+Router.get('/products', restaurantAuthorization, searchProduct);                        // /restaurants/products?name=abc
+Router.delete('/products', restaurantAuthorization, removeProduct); //                  // /restaurants/products?productid=123
 
-Router.delete('/deleteProduct', restaurantAuthorization, removeProduct); //
+Router.get('/orders', restaurantAuthorization, getRecentOrders);                        // /restaurants/orders 
+Router.put('/orders', restaurantAuthorization, changeOrderStatus);                      // /restaurants/orders?orderid=123   
+
 
 module.exports = Router;

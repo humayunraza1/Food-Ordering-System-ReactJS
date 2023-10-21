@@ -49,8 +49,40 @@ const adminDetails = async (req, res) => {
 }
 
 
+
 const searchUser = async (req, res) => {
-    let { email, phone_number } = req.body;
+    let { email, phonenumber } = req.query;
+
+    if (!email && !phonenumber) {
+        try {
+            const connection = await getConnection();
+
+            const result = await connection.execute(
+                `SELECT userID, fullName, email, phone_number FROM USERS WHERE Role = 'user' FETCH FIRST 30 ROWS ONLY`,
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+            connection.close();
+            if (result.rows.length === 0) {
+                return res.status(404).json({
+                    'status': 'error',
+                    'message': 'No user found'
+                })
+            }
+            return res.status(200).json({
+                'status': 'success',
+                'message': 'Users Found',
+                'data': result.rows
+            })
+        } catch (err) {
+            console.log(`Error from searchUser function ${err}`);
+            return res.status(500).json({
+                'status': 'error',
+                'message': 'This is an issue from our end please try again later!'
+            })
+        }
+
+    }
 
     if (email) {
         email = email.toLowerCase();
@@ -64,8 +96,8 @@ const searchUser = async (req, res) => {
             })
         }
     }
-    if (phone_number) {
-        const user = await searchByNumber('USERS', phone_number);
+    if (phonenumber) {
+        const user = await searchByNumber('USERS', phonenumber);
         if (user) {
             return res.status(200).json({
                 'status': 'success',
@@ -82,7 +114,40 @@ const searchUser = async (req, res) => {
 }
 
 const searchRestaurant = async (req, res) => {
-    let { email, phone_number } = req.body;
+    let { email, phonenumber } = req.query;
+
+    if (!email && !phonenumber) {
+        try {
+            const connection = await getConnection();
+
+            const result = await connection.execute(
+                `SELECT RestaurantID, RestaurantName, email, phone_number FROM RESTAURANTS FETCH FIRST 30 ROWS ONLY`,
+                [],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+            connection.close();
+            if (result.rows.length === 0) {
+                return res.status(404).json({
+                    'status': 'error',
+                    'message': 'No user found'
+                })
+            }
+            return res.status(200).json({
+                'status': 'success',
+                'message': 'Users Found',
+                'data': result.rows
+            })
+        } catch (err) {
+            console.log(`Error from searchRestaurant function ${err}`);
+            return res.status(500).json({
+                'status': 'error',
+                'message': 'This is an issue from our end please try again later!'
+            })
+
+        }
+
+    }
+
 
     if (email) {
         email = email.toLowerCase();
@@ -95,8 +160,8 @@ const searchRestaurant = async (req, res) => {
             })
         }
     }
-    if (phone_number) {
-        const restaurant = await searchByNumber('RESTAURANTS', phone_number);
+    if (phonenumber) {
+        const restaurant = await searchByNumber('RESTAURANTS', phonenumber);
         if (restaurant) {
             return res.status(200).json({
                 'status': 'success',
@@ -109,14 +174,21 @@ const searchRestaurant = async (req, res) => {
 }
 
 const addRestaurants = async (req, res) => {
-    let { email, password, restaurantName, address, phone_number, website } = req.body;
+    let { email, password, restaurantname, address, phonenumber, website } = req.body;
+    if (!email || !password || !restaurantname || !address || !phonenumber || !website) {
+        console.log(`Error from addRestaurants function: Please fill all the fields!`);
+        return res.status(400).json({
+            'status': 'error',
+            'message': 'Please fill all the fields!'
+        })
+    }
     try {
-        restaurantName = restaurantName.toUpperCase();
+        restaurantname = restaurantname.toUpperCase();
         const connection = await getConnection();
         const hashedPassword = await bcrypt.hash(password, 10);
         const result = await connection.execute(
             `INSERT INTO RESTAURANTS (email, password, restaurantName, address, phone_number, website) VALUES (:email, :password, :restaurantName, :address, :phone_number, :wesbite)`,
-            [email, hashedPassword, restaurantName, address, phone_number, website],
+            [email, hashedPassword, restaurantname, address, phonenumber, website],
             { autoCommit: true }
 
         );
@@ -136,12 +208,19 @@ const addRestaurants = async (req, res) => {
 }
 
 const removeUser = async (req, res) => {
-    const { UserID } = req.body;
+    const { userid } = req.query;
+    if (!userid) {
+        console.log(`Error from removeUser function: Please provide userid!`);
+        return res.status(400).json({
+            'status': 'error',
+            'message': 'Please provide userid!'
+        })
+    }
     try {
         const connection = await getConnection();
-        const result = await connection.execute(
-            `DELETE FROM USERS WHERE UserID=:UserID`,
-            [UserID],
+        await connection.execute(
+            `DELETE FROM USERS WHERE UserID=:userid`,
+            [userid],
             { autoCommit: true }
 
         );
@@ -161,12 +240,19 @@ const removeUser = async (req, res) => {
 }
 
 const removeRestaurant = async (req, res) => {
-    const { RestaurantID } = req.body;
+    const { restaurantid } = req.query;
+    if (!restaurantid) {
+        console.log(`Error from removeRestaurant function: Please provide restaurantid!`);
+        return res.status(400).json({
+            'status': 'error',
+            'message': 'Please provide restaurantid!'
+        })
+    }
     try {
         const connection = await getConnection();
-        const result = await connection.execute(
-            `DELETE FROM RESTAURANTS WHERE RestaurantID=:RestaurantID`,
-            [RestaurantID],
+        await connection.execute(
+            `DELETE FROM RESTAURANTS WHERE RestaurantID=:restaurantid`,
+            [restaurantid],
             { autoCommit: true }
         );
         connection.close();
@@ -184,7 +270,9 @@ const removeRestaurant = async (req, res) => {
     }
 }
 
-// Helper Functions
+// ------------------------------------------HELPER FUNCTIONS----------------------------------------------
+
+
 const searchByEmail = async (table, email) => {
     try {
         const connection = await getConnection();

@@ -11,13 +11,15 @@ const {authorize, isUser} = require('../middlewares/authorizationMiddleware.js')
 
 // -------------------------------------------------------------------------------------------------------------
 
-Router.post('/register', validateRegistration, emailUniquenessCheck, register);
-Router.post('/login', validateLogin, login);
+Router.post('/register', validateRegistration, emailUniquenessCheck, register); // /users/register 
+Router.post('/login', validateLogin, login);                                    // /users/login
+
+// Router.get('/logout', authorize, isUser, logout);
 
 Router.post('/placeOrder', authorize, isUser, placeOrder); //  
 
-Router.get('/user-details', authorize, isUser, displayUserDetails);
-Router.get('/logout', authorize, isUser, logout);
+Router.get('/user-details', authorize, isUser, displayUserDetails);             // /users/user-details
+Router.put('/update-user-details', authorize, isUser, updateUserDetails);       // /users/update-user-details
 
 // Router.get('/home', authorize, isUser, browseRestaurants); // 
 // Router.get('/searchRestaurant', authorize, isUser, searchRestaurant); //
@@ -27,7 +29,6 @@ Router.get('/orderHistory', authorize, isUser, getOrderHistory); //
 
 Router.get('/orderDetails', authorize, isUser, getOrderDetails); // 
 
-Router.put('/update-user-details', authorize, isUser, updateUserDetails);
 
 
 module.exports = Router;
