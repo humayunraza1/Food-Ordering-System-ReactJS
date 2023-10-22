@@ -1,6 +1,7 @@
 * {
   margin: 0;
 }
-body {
+.homeContainer {
+  width: 100%;
   height: 300dvh;
 }

@@ -1,6 +1,6 @@
-body {
+.registerContainer {
   position: relative;
   margin: 0;
-  height: 100dvh; /* 100% viewport height */
+  height: 100dvh; /*100% viewport height */
   width: 100%;
 }

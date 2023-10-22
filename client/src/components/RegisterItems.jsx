@@ -210,27 +210,27 @@ function RegisterItems({ formStage, setStage }) {
         e.preventDefault();
         setStage(2);
         setNext(false);
-        const fullName = accDetails.Name;
+        const fullname = accDetails.Name;
         const email = accDetails.Email;
         const password = accDetails.Password;
-        const phoneNumber = accDetails.Number;
+        const phonenumber = accDetails.Number;
         const address = accDetails.Address;
         if (!loading) {
             setSuccess(false);
             setLoading(true);
         }
         try {
-            const res = await fetch("http://localhost:3001/users/register", {
+            const res = await fetch("http://192.168.18.139:3001/users/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    fullName,
+                    fullname,
                     email,
                     password,
-                    phoneNumber,
-                    address
+                    phonenumber,
+                    address,
                 })
             });
             const data = await res.json();

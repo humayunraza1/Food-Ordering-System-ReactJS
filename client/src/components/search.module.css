@@ -23,3 +23,32 @@ input {
 input:focus {
   outline-style: none;
 }
+
+.icon {
+  font-size: 40px;
+}
+
+@media screen and (480px < width <= 601px) {
+  .inputWrapper {
+    max-width: 450px;
+  }
+  input {
+    width: 350px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .inputWrapper {
+    max-width: 350px;
+  }
+  input {
+    width: 250px;
+    font-size: 1.2rem;
+  }
+  .fabBtn {
+    height: 50px;
+  }
+  .icon {
+    font-size: 30px;
+  }
+}

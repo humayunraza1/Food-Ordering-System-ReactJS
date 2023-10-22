@@ -17,9 +17,9 @@ function Search({ searchText }) {
     }
     return (
         <div className={styles.inputWrapper}>
-            <RestaurantIcon fontSize="large" />
+            <RestaurantIcon className={styles.icon} />
             <input ref={searchText} className={styles.inputBar} placeholder="Favorite Restaurant Or Food..."></input>
-            <Fab sx={fabStyle} onClick={handleClick}>
+            <Fab sx={fabStyle} className={styles.fabBtn} onClick={handleClick}>
                 GO
             </Fab>
         </div>

@@ -1,6 +1,6 @@
 const validateRegistration = (req, res, next) => {
-    const {fullName, email, password, phoneNumber, address} = req.body;
-    if (!fullName || !email || !password || !phoneNumber || !address) {
+    const { fullname, email, password, phonenumber, address } = req.body;
+    if (!fullname || !email || !password || !phonenumber || !address) {
         return res.status(400).json({
             'status': 'error',
             'message': 'Required Fields are missing'
@@ -10,11 +10,11 @@ const validateRegistration = (req, res, next) => {
 }
 
 const validateLogin = (req, res, next) => {
-    const {email, password} = req.body;
+    const { email, password } = req.body;
     if (!email || !password) {
         return res.status(400).json({
-            'status':'error',
-            'message':'Email and Password are required for login'
+            'status': 'error',
+            'message': 'Email and Password are required for login'
         })
     }
     next();
