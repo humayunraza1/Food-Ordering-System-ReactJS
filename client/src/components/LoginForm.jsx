@@ -16,6 +16,8 @@ import { styled } from '@mui/system';
 import { purple, grey } from '@mui/material/colors';
 import { useNavigate } from "react-router-dom";
 import AlertBar from "./AlertBar";
+import { useDispatch } from 'react-redux';
+import { fetchUserDetails } from "../actions/userActions.js"
 
 const btnStyle = {
     color: 'common.white',
@@ -54,6 +56,7 @@ function LoginForm({ setLoggedIn }) {
     const [login, setLogin] = useState({ Email: "", Password: "" });
     const [isLoading, setLoading] = useState(false);
     const [Show, setShow] = useState(false);
+    const dispatch = useDispatch();
     const [status, setStatus] = useState({ Status: '', msg: '' })
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event) => {
@@ -98,9 +101,11 @@ function LoginForm({ setLoggedIn }) {
                 setShow(true);
                 setStatus({ Status: 'success', msg: 'Successfuly logged in' })
                 sessionStorage.setItem('authToken', data.token)
+                dispatch(fetchUserDetails(data.token))
+                navigate('/')
                 setTimeout(function () {
-                    navigate('/')
-                }, 2000);
+                    window.location.reload();
+                }, 500);
             }, 2000)
         }
         console.log(data);

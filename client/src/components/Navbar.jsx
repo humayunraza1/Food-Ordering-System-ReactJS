@@ -2,6 +2,7 @@ import styles from "./navbar.module.css"
 import Button from '@mui/material/Button';
 import Zoom from '@mui/material/Zoom';
 import { useNavigate } from "react-router";
+import { useSelector } from 'react-redux';
 import { grey } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -10,7 +11,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Grid from '@mui/material/Unstable_Grid2';
 
 const btnStyle = {
@@ -33,38 +34,41 @@ const btnStyle2 = {
     },
     boxShadow: 0,
 };
-function Navbar({ isTitleVisible, isLoggedIn, setLoggedIn }) {
+function Navbar({ isTitleVisible }) {
     const [anchorElUser, setAnchorElUser] = useState(null);
-    const [name, setName] = useState("");
+    const user = useSelector((state) => state.user.user);
     const navigate = useNavigate();
-    let token = '';
-    if (sessionStorage.length === 1) {
-        token = sessionStorage.getItem('authToken');
-    }
-    useEffect(() => {
-        try {
-            async function fetchData() {
-                console.log(token)
-                const res = await fetch('http://192.168.18.139:3001/users/user-details', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
+    // let token = '';
+    // if (sessionStorage.length === 1) {
+    //     token = sessionStorage.getItem('authToken');
+    // } else {
+    //     sessionStorage.clear();
+    // }
+    // useEffect(() => {
+    //     try {
+    //         async function fetchData() {
+    //             console.log(token)
+    //             const res = await fetch('http://192.168.18.139:3001/users/user-details', {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Authorization': `${token}`,
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //             });
 
-                const data = await res.json();
-                if (!data || data.status !== 'success') {
-                    console.log(data);
-                } else {
-                    setName(data.data.FULLNAME.toUpperCase())
-                }
-            }
-            fetchData();
-        } catch (err) {
-            console.log(err)
-        }
-    })
+    //             const data = await res.json();
+    //             if (!data || data.status !== 'success') {
+    //                 console.log(data);
+    //             } else {
+    //                 setName(data.data.FULLNAME.toUpperCase());
+    //             }
+    //         }
+    //         fetchData();
+    //     } catch (err) {
+    //         console.log(err)
+    //     }
+    // }, [token])
+
 
 
     const handleOpenUserMenu = (event) => {
@@ -102,7 +106,7 @@ function Navbar({ isTitleVisible, isLoggedIn, setLoggedIn }) {
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt={name} src="/static/images/avatar/2.jpg" />
+                                    <Avatar alt={user.FULLNAME.toUpperCase()} src="/static/images/avatar/2.jpg" />
                                 </IconButton>
                             </Tooltip>
                             <Menu
@@ -123,7 +127,7 @@ function Navbar({ isTitleVisible, isLoggedIn, setLoggedIn }) {
                             >
 
                                 <MenuItem key='Account' onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">Account</Typography>
+                                    <Typography textAlign="center" onClick={() => navigate('users/dashboard')}>Account</Typography>
                                 </MenuItem>
                                 <MenuItem key='Logout' onClick={handleCloseUserMenu}>
                                     <Typography textAlign="center" onClick={() => {

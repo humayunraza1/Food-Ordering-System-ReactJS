@@ -1,0 +1,66 @@
+.dashboardContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  height: 100dvh;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
+    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  height: 250px;
+  width: 100%;
+  color: darkmagenta;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
+    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  justify-content: center;
+}
+
+.heading h1 {
+  font-family: "Lobster", sans-serif;
+  letter-spacing: 2px;
+  font-size: 3rem;
+}
+.heading h1:hover {
+  cursor: pointer;
+}
+.heading div {
+  font-family: "Poppins", sans-serif;
+  font-weight: bold;
+  font-size: 0.7rem;
+  max-width: 280px;
+  text-align: center;
+}
+
+.btnContainer {
+  margin-top: 40px;
+  display: flex;
+  width: 100%;
+}
+
+.drawerContainer {
+  height: "100%";
+  text-align: "center";
+  display: "flex";
+  flex-direction: "column";
+  justify-content: "center";
+}
+@media screen and (max-width: 899px) {
+  .dashboardContainer {
+    height: 30dvh;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .btnContainer {
+    display: flex;
+    justify-content: end;
+  }
+  .heading {
+    box-shadow: none;
+  }
+}

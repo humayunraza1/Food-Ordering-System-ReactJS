@@ -33,17 +33,17 @@ const restaurantLogin = async (req, res) => {
             });
             connection.close();
             return res.status(200).json({
-                'status':'success',
-                'message':'Login Successful!',
-                'token':token,
-                'redirectUrl':'/restaurants/getRecentOrders'
+                'status': 'success',
+                'message': 'Login Successful!',
+                'token': token,
+                'redirectUrl': '/restaurants/getRecentOrders'
             })
         }
         else {
             connection.close();
             return res.status(401).json({
-                'status':'failed',
-                'message':'Invalid Credentials!'
+                'status': 'failed',
+                'message': 'Invalid Credentials!'
             })
         }
 
@@ -56,14 +56,14 @@ const restaurantLogin = async (req, res) => {
     }
 }
 
-const addProduct = async (req,res) => {
-    const {restaurantId} = req.restaurant;
-    let {name, description, category, price} = req.body;
+const addProduct = async (req, res) => {
+    const { restaurantId } = req.restaurant;
+    let { name, description, category, price } = req.body;
     if (!name || !description || !category || !price) {
         console.log(`Restaurant didnt fill all product details (restaurantController/addProduct)`);
         return res.status(400).json({
-            'status':'failed',
-            'message':'Please enter all the details!'
+            'status': 'failed',
+            'message': 'Please enter all the details!'
         })
     }
     name = name.toUpperCase();
@@ -73,46 +73,46 @@ const addProduct = async (req,res) => {
             `INSERT INTO RESTAURANTITEMS (restaurantId, name, description, Category, price) VALUES (:restaurantId, :name, 
                 :description, :category, :price)`,
             [restaurantId, name, category, description, price],
-            {autoCommit: true}
+            { autoCommit: true }
         );
         connection.close();
         return res.status(200).json({
-            'status':'success',
-            'message':'Product Item added successfully!'
+            'status': 'success',
+            'message': 'Product Item added successfully!'
         })
 
-    } 
-    catch(err) {
+    }
+    catch (err) {
         console.log(`Error from addProduct function ${err}`);
         return res.status(500).json({
-            'status':'error',
-            'message':'This is an issue from our end please try again later!'
+            'status': 'error',
+            'message': 'This is an issue from our end please try again later!'
         })
     }
 }
 
-const searchProduct = async (req,res) => {
-    const {restaurantId} = req.restaurant;
-    let {name} = req.query;
+const searchProduct = async (req, res) => {
+    const { restaurantId } = req.restaurant;
+    let { name } = req.query;
     if (!name) {
         try {
             const connection = await getConnection();
             const result = await connection.execute(
                 `SELECT * FROM RESTAURANTITEMS WHERE restaurantId=:restaurantId`,
                 [restaurantId],
-                {outFormat: oracledb.OUT_FORMAT_OBJECT}
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
             connection.close();
             if (result.rows.length === 0) {
                 return res.status(404).json({
-                    'status':'failed',
-                    'message':'No Products Found!'
+                    'status': 'failed',
+                    'message': 'No Products Found!'
                 })
             }
             return res.status(200).json({
-                'status':'success',
-                'message':'Details Fetched Successfully!',
-                'data':result.rows
+                'status': 'success',
+                'message': 'Details Fetched Successfully!',
+                'data': result.rows
             })
 
         } catch (err) {
@@ -124,106 +124,106 @@ const searchProduct = async (req,res) => {
         }
     }
     name = name.toUpperCase();
-    try{
+    try {
         const query = `SELECT * FROM RESTAURANTITEMS WHERE restaurantId=:restaurantId AND name LIKE '%' || :name || '%'`;
         const connection = await getConnection();
         const result = await connection.execute(
             query,
             [restaurantId, name],
-            {outFormat: oracledb.OUT_FORMAT_OBJECT}
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
         connection.close();
         if (result.rows.length === 0) {
             return res.status(404).json({
-                'status':'failed',
-                'message':'No Products Found!'
+                'status': 'failed',
+                'message': 'No Products Found!'
             })
         }
         return res.status(200).json({
-            'status':'success',
-            'message':'Details Fetched Successfully!',
-            'data':result.rows
+            'status': 'success',
+            'message': 'Details Fetched Successfully!',
+            'data': result.rows
 
         })
-    } catch(err) {
+    } catch (err) {
         console.log(`Error from searchProduct function ${err}`);
         return res.status(500).json({
-            'status':'error',
-            'message':'This is an issue from our end please try again later!'
+            'status': 'error',
+            'message': 'This is an issue from our end please try again later!'
         })
     }
 }
 
-const removeProduct = async (req,res) => {
-    const {restaurantId} = req.restaurant;
-    const {productid} = req.query;
+const removeProduct = async (req, res) => {
+    const { restaurantId } = req.restaurant;
+    const { productid } = req.query;
     try {
         const connection = await getConnection();
         await connection.execute(
             `DELETE FROM RESTAURANTITEMS WHERE restaurantId=:restaurantId AND productId=:productid`,
             [restaurantId, productid],
-            {autoCommit: true}
+            { autoCommit: true }
         );
         connection.close();
         return res.status(200).json({
-            'status':'success',
-            'message':'Product Removed Successfully!'
+            'status': 'success',
+            'message': 'Product Removed Successfully!'
         })
     }
-    catch(err) {
+    catch (err) {
         console.log(`Error from removeProduct function ${err}`);
         return res.status(500).json({
-            'status':'error',
-            'message':'This is an issue from our end please try again later!'
+            'status': 'error',
+            'message': 'This is an issue from our end please try again later!'
         })
     }
 }
 
-const getRecentOrders = async (req,res) => {
-    const {restaurantId} = req.restaurant;
+const getRecentOrders = async (req, res) => {
+    const { restaurantId } = req.restaurant;
     try {
         const connection = await getConnection();
         const result = await connection.execute(
             `SELECT * FROM ORDERS WHERE restaurantId=:restaurantId AND OrderStatus = 'Processing' OR OrderStatus = 'In Progress'`,
             [restaurantId],
-            {outFormat: oracledb.OUT_FORMAT_OBJECT}
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
         connection.close();
         if (result.rows.length === 0) {
             return res.status(404).json({
-                'status':'failed',
-                'message':'No Orders Found!'
+                'status': 'failed',
+                'message': 'No Orders Found!'
             })
         }
         return res.status(200).json({
-            'status':'success',
-            'message':'Details Fetched Successfully!',
-            'data':result.rows[0]
+            'status': 'success',
+            'message': 'Details Fetched Successfully!',
+            'data': result.rows[0]
         })
     }
-    catch(err) {
+    catch (err) {
         console.log(`Error from getRecentOrders function ${err}`);
         return res.status(500).json({
-            'status':'error',
-            'message':'This is an issue from our end please try again later!'
+            'status': 'error',
+            'message': 'This is an issue from our end please try again later!'
         })
     }
 }
 
-const changeOrderStatus = async (req,res) => {
-    const {restaurantId} = req.restaurant;
-    const {orderid} = req.body;
+const changeOrderStatus = async (req, res) => {
+    const { restaurantId } = req.restaurant;
+    const { orderid } = req.body;
     try {
         const connection = await getConnection();
         let result = await connection.execute(
             `SELECT OrderStatus FROM ORDERS WHERE restaurantId=:restaurantId AND orderId=:orderid AND OrderStatus = 'Processing' OR OrderStatus = 'In Progress'`,
             [restaurantId, orderid],
-            {outFormat: oracledb.OUT_FORMAT_OBJECT}
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
         if (result.rows.length === 0) {
             return res.status(404).json({
-                'status':'failed',
-                'message':'Order can not be further updated'
+                'status': 'failed',
+                'message': 'Order can not be further updated'
             })
         }
         result = result.rows[0];
@@ -232,7 +232,7 @@ const changeOrderStatus = async (req,res) => {
             await connection.execute(
                 `UPDATE ORDERS SET OrderStatus='Delivered' WHERE restaurantId=:restaurantId AND orderId=:orderId`,
                 [restaurantId, orderid],
-                {autoCommit: true}
+                { autoCommit: true }
             );
             currStatus = 'Delivered';
         }
@@ -240,21 +240,21 @@ const changeOrderStatus = async (req,res) => {
             await connection.execute(
                 `UPDATE ORDERS SET OrderStatus='In Progress' WHERE restaurantId=:restaurantId AND orderId=:orderId`,
                 [restaurantId, orderid],
-                {autoCommit: true}
+                { autoCommit: true }
             );
             currStatus = 'In Progress';
         }
         connection.close();
         return res.status(200).json({
-            'status':'success',
-            'message':`Order Status Changed Successfully to ${currStatus}!`
+            'status': 'success',
+            'message': `Order Status Changed Successfully to ${currStatus}!`
         })
     }
-    catch(err) {
+    catch (err) {
         console.log(`Error from changeOrderStatus function ${err}`);
         return res.status(500).json({
-            'status':'error',
-            'message':'This is an issue from our end please try again later!'
+            'status': 'error',
+            'message': 'This is an issue from our end please try again later!'
         })
     }
 }
@@ -268,5 +268,6 @@ module.exports = {
     removeProduct,
     getRecentOrders,
     changeOrderStatus,
-    
+
 }
+

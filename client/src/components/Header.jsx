@@ -1,6 +1,5 @@
 import styles from "./header.module.css";
 import Search from "./Search.jsx";
-import { useRef } from "react";
 
 function Header({ searchText, titleRef }) {
     return (
