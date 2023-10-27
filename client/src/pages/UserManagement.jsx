@@ -5,6 +5,7 @@ import styles from "./userManagement.module.css";
 import { useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import ManageUsers from '../components/ManageUsers';
 function UserManagement() {
 
     const user = useSelector((state) => state.fetchUser.user);
@@ -41,7 +42,7 @@ function UserManagement() {
 
             <Grid container>
                 <Grid xs={12} md={2}><Dashboard role={ROLE} setSearchParams={setSearchParams} searchParams={searchParams} /></Grid>
-                <Grid xs={12} md={10}>{tab === "settings" && <UserDetails />}</Grid>
+                <Grid xs={12} md={10}>{tab === "settings" && <UserDetails />} {ad === 'manage-users' && <ManageUsers />}</Grid>
             </Grid>
         </div>
     )

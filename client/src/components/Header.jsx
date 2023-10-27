@@ -1,5 +1,6 @@
 import styles from "./header.module.css";
 import Search from "./Search.jsx";
+import RestaurantIcon from '@mui/icons-material/Restaurant';
 
 function Header({ searchText, titleRef }) {
     return (
@@ -13,7 +14,7 @@ function Header({ searchText, titleRef }) {
                             <p>Eat That Foody.</p>
                         </div>
                     </div>
-                    <Search searchText={searchText} />
+                    <Search startIcon={<RestaurantIcon className={styles.icon} />} searchText={searchText} placeholder="Favorite Restaurant Or Food..." />
                 </div>
             </header>
         </>

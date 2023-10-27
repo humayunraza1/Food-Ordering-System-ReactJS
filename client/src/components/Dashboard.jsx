@@ -14,6 +14,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Divider } from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
 import StorefrontIcon from '@mui/icons-material/Storefront';
+import { useDispatch } from 'react-redux';
 
 const drawerWidth = 240;
 function Dashboard(props) {
@@ -24,6 +25,8 @@ function Dashboard(props) {
     const handleDrawerToggle = () => {
         setMobileOpen((prevState) => !prevState);
     };
+    const dispatch = useDispatch();
+    const token = sessionStorage.getItem('authToken');
 
     const drawer = (
         <Box onClick={handleDrawerToggle} className={styles.drawerContainer} sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -50,6 +53,19 @@ function Dashboard(props) {
     );
 
     const container = window !== undefined ? () => window().document.body : undefined;
+
+    async function getDetails() {
+        const res = await fetch('http://localhost:3001/admin/admin-dashboard', {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json',
+            }
+        });
+        const data = await res.json();
+        console.log(data);
+    }
+
     return (
         <div className={styles.dashboardContainer}>
             <div className={styles.heading}>
@@ -84,7 +100,10 @@ function Dashboard(props) {
                         {props.role === 'admin' && <>
                             <Divider sx={{ width: '100%', height: '30px' }} />
                             <p className={styles.admin}>Admin Controls</p>
-                            <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<PersonIcon />} onClick={() => setSearchParams({ ad: 'manage-users' })}>
+                            <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<PersonIcon />} onClick={() => {
+                                getDetails();
+                                setSearchParams({ ad: 'manage-users' })
+                            }}>
                                 Manage Users
                             </Button>
                             <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<StorefrontIcon />} onClick={() => setSearchParams({ ad: 'manage-restaurants' })}>
@@ -113,7 +132,7 @@ function Dashboard(props) {
             </div>
         </div>
     )
-}
 
+}
 
 export default Dashboard

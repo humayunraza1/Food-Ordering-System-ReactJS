@@ -1,5 +1,4 @@
 import styles from "./search.module.css"
-import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { purple } from '@mui/material/colors';
 import Fab from '@mui/material/Fab';
 
@@ -11,15 +10,13 @@ const fabStyle = {
         bgcolor: purple[600],
     },
 };
-function Search({ searchText }) {
-    function handleClick() {
-        console.log(searchText.current.value)
-    }
+function Search({ searchText, placeholder, startIcon, onSearch }) {
+
     return (
         <div className={styles.inputWrapper}>
-            <RestaurantIcon className={styles.icon} />
-            <input ref={searchText} className={styles.inputBar} placeholder="Favorite Restaurant Or Food..."></input>
-            <Fab sx={fabStyle} className={styles.fabBtn} onClick={handleClick}>
+            {startIcon}
+            <input ref={searchText} className={styles.inputBar} placeholder={placeholder}></input>
+            <Fab sx={fabStyle} className={styles.fabBtn} onClick={onSearch}>
                 GO
             </Fab>
         </div>
