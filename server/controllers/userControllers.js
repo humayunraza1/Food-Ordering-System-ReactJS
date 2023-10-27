@@ -93,18 +93,10 @@ const login = async (req, res) => {
             const token = jwt.sign({ userId: user.USERID, role: user.ROLE }, secretKey, {
                 expiresIn: '1h',
             });
-            let redirectUrl = '';
-            if (user.ROLE == 'admin') {
-                redirectUrl = '/admin/admin-dashboard';
-            }
-            else if (user.ROLE === 'user') {
-                redirectUrl = '/';
-            }
             return res.status(200).json({
                 'status': 'success',
                 'message': 'User Logged In Successfully!',
-                'token': token,
-                'redirectUrl': redirectUrl
+                'token': token
             });
 
 
@@ -132,7 +124,7 @@ const displayUserDetails = async (req, res) => {
     try {
         const connection = await getConnection();
         const result = await connection.execute(
-            `SELECT fullName, email, phone_number, address FROM USERS WHERE UserID=:UserID`,
+            `SELECT fullName, role, email, phone_number, address FROM USERS WHERE UserID=:UserID`,
             [userId],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
@@ -142,7 +134,7 @@ const displayUserDetails = async (req, res) => {
             return res.status(200).json({
                 'status': 'success',
                 'message': 'User Details Fetched Successfully!',
-                'data': userData
+                'data': userData,
             })
         }
         return res.status(404).json({
@@ -198,6 +190,11 @@ const updateUserDetails = async (req, res) => {
                 [HashedNewPassword, userId],
                 { autoCommit: true }
             );
+        } else {
+            return res.status(400).json({
+                'status': 'error',
+                'message': 'Password length too short'
+            })
         }
         if (phonenumber && phoneNumberRegex.test(phonenumber)) { // Update Phone Number
             await connection.execute(

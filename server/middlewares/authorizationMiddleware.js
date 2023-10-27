@@ -22,16 +22,6 @@ const authorize = (req, res, next) => {
     });
 }
 
-const isUser = (req, res, next) => {
-    if (req.user.role !== 'user') {
-        return res.status(401).json({
-            'status': 'error',
-            'message': 'Only users can access this'
-        });
-    }
-    next();
-}
-
 const isAdmin = (req, res, next) => {
     if (req.user.role !== 'admin') {
         return res.status(401).json({
@@ -44,6 +34,5 @@ const isAdmin = (req, res, next) => {
 
 module.exports = {
     authorize,
-    isAdmin,
-    isUser,
+    isAdmin
 }

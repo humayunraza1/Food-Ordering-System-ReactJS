@@ -64,3 +64,11 @@
     box-shadow: none;
   }
 }
+
+.admin {
+  opacity: 0.7;
+  margin-top: 10px;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: small;
+}

@@ -1,18 +1,18 @@
-// userReducer.js
+// updateUserReducer.js (for updating user details)
 const initialState = {
     user: null,
     error: null,
 };
 
-const userReducer = (state = initialState, action) => {
+const updateUserReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'FETCH_USER_DETAILS_SUCCESS':
+        case 'UPDATE_USER_DETAILS_SUCCESS':
             return {
                 ...state,
                 user: action.payload,
                 error: null,
             };
-        case 'FETCH_USER_DETAILS_ERROR':
+        case 'UPDATE_USER_DETAILS_ERROR':
             return {
                 ...state,
                 user: null,
@@ -23,4 +23,4 @@ const userReducer = (state = initialState, action) => {
     }
 };
 
-export default userReducer;
+export default updateUserReducer;

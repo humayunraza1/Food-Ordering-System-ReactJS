@@ -17,7 +17,7 @@ import { purple, grey } from '@mui/material/colors';
 import { useNavigate } from "react-router-dom";
 import AlertBar from "./AlertBar";
 import { useDispatch } from 'react-redux';
-import { fetchUserDetails } from "../actions/userActions.js"
+import { fetchUserDetails } from "../actions/fetchUserActions.js"
 
 const btnStyle = {
     color: 'common.white',

@@ -36,7 +36,7 @@ const btnStyle2 = {
 };
 function Navbar({ isTitleVisible }) {
     const [anchorElUser, setAnchorElUser] = useState(null);
-    const user = useSelector((state) => state.user.user);
+    const user = useSelector((state) => state.fetchUser.user);
     const navigate = useNavigate();
     // let token = '';
     // if (sessionStorage.length === 1) {

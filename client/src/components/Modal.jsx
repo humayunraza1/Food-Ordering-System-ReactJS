@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
-import { useState } from 'react';
 import Backdrop from '@mui/material/Backdrop';
+
 const style = {
     position: 'absolute',
     display: 'flex',
@@ -37,6 +37,7 @@ function ModalBox({ children, open, setOpen }) {
                 },
             }}
         >
+
             <Fade in={open}>
                 <Box sx={style}>
                     {children}
