@@ -9,7 +9,7 @@ Router.get('/users', authorize, isAdmin, adminController.searchUser); // /admin/
 
 Router.get('/restaurants', authorize, isAdmin, adminController.searchRestaurant); // /admin/restaurants PASS email or phone_number as query
 
-Router.post('/restaurants', authorize, isAdmin, adminController.addRestaurants); // /admin/restaurants PASS IN BODY
+Router.post('/add-restaurant', authorize, isAdmin, adminController.addRestaurants); // /admin/restaurants PASS IN BODY
 
 Router.delete('/remove-user', authorize, isAdmin, adminController.removeUser); // /admin/users PASS userid in query
 

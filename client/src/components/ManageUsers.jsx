@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import AlertBar from "./AlertBar";
+
 const token = sessionStorage.getItem('authToken');
 
 function ManageUsers() {
@@ -90,37 +91,38 @@ function ManageUsers() {
                 <Search searchText={searchText} onSearch={searchUser} startIcon={<SearchIcon />} placeholder="Search user's name or email" />
             </div>
             <div className={styles.usersList}>
-                {visibleUsers.map((user, h) => {
-                    return <>
-                        {loading ? <Skeleton key={h} animation="wave" variant="rounded" sx={{ width: { md: 510, sm: 410, xs: 350 } }} height={100} /> :
-                            <Zoom in={true}>
-                                <Box key={h} sx={{ width: { md: 510, sm: 410, xs: 350 }, height: 100 }} className={styles.userBox}>
-                                    <Grid container sx={{ height: '100%' }}>
-                                        <Grid xs={2} height='100%' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', lineHeight: '35px' }}>
+                {filteredUsers.length === 0 ? <div className={styles.noRes}><p>No restaurants to show</p></div> :
+                    (visibleUsers.map((user, h) => {
+                        return <>
+                            {loading ? <Skeleton key={h} animation="wave" variant="rounded" sx={{ width: { md: 510, sm: 410, xs: 350 } }} height={100} /> :
+                                <Zoom in={true}>
+                                    <Box key={h} sx={{ width: { md: 510, sm: 410, xs: 350 }, height: 100 }} className={styles.userBox}>
+                                        <Grid container sx={{ height: '100%' }}>
+                                            <Grid xs={2} height='100%' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', lineHeight: '35px' }}>
 
-                                            <p style={{ fontSize: '3.1rem', opacity: '0.5', color: 'grey' }}>{user.USERID}</p>
-                                            <p style={{ fontSize: '0.8rem', opacity: '0.5', color: 'grey' }}>User ID</p>
+                                                <p style={{ fontSize: '3.1rem', opacity: '0.5', color: 'grey' }}>{user.USERID}</p>
+                                                <p style={{ fontSize: '0.8rem', opacity: '0.5', color: 'grey' }}>User ID</p>
+                                            </Grid>
+                                            <Grid xs={8} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', rowGap: '10px', fontSize: '0.9rem', lineHeight: '20px' }}>
+                                                <p>Name: {user.FULLNAME}</p>
+                                                <p>Email: {user.EMAIL}</p>
+                                                <p>Number: {user.PHONE_NUMBER}</p>
+                                            </Grid>
+                                            <Grid xs={2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                                                <IconButton color="error" aria-label="delete" onClick={() => {
+                                                    setShow(false);
+                                                    deleteUser(user.USERID)
+                                                }}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </Grid>
                                         </Grid>
-                                        <Grid xs={8} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', rowGap: '10px', fontSize: '0.9rem', lineHeight: '20px' }}>
-                                            <p>Name: {user.FULLNAME}</p>
-                                            <p>Email: {user.EMAIL}</p>
-                                            <p>Number: {user.PHONE_NUMBER}</p>
-                                        </Grid>
-                                        <Grid xs={2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                                            <IconButton color="error" aria-label="delete" onClick={() => {
-                                                setShow(false);
-                                                deleteUser(user.USERID)
-                                            }}>
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </Grid>
-                                    </Grid>
-                                </Box>
-                            </Zoom>
+                                    </Box>
+                                </Zoom>
 
-                        }
-                    </>
-                })}
+                            }
+                        </>
+                    }))}
                 <Pagination page={currentPage} count={totalPages} onChange={handlePageChange} color="secondary" />
             </div>
         </div>

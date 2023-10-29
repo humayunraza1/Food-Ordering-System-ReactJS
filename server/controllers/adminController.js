@@ -9,19 +9,19 @@ const adminDetails = async (req, res) => {
     try {
         const connection = await getConnection();
         const result1 = await connection.execute(
-            `SELECT userID, fullName, email, phone_number FROM USERS WHERE Role = 'user' FETCH FIRST 15 ROWS ONLY`,
+            `SELECT userID, fullName, email, phone_number FROM USERS WHERE Role = 'user'`,
             [],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
 
         const result2 = await connection.execute(
-            `SELECT RestaurantID, RestaurantName FROM RESTAURANTS FETCH FIRST 15 ROWS ONLY`,
+            `SELECT RestaurantID, RestaurantName, email, phone_number FROM RESTAURANTS`,
             [],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
 
         const result3 = await connection.execute(
-            `SELECT OrderID, OrderStatus FROM ORDERS ORDER BY OrderTimeDate DESC FETCH FIRST 15 ROWS ONLY`,
+            `SELECT OrderID, OrderStatus FROM ORDERS ORDER BY OrderTimeDate DESC`,
             [],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
