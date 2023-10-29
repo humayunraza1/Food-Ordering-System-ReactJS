@@ -100,9 +100,9 @@ function ManageRestaurants() {
 
     async function searchUser() {
         const { value } = searchText.current;
-        const newArr = restaurants.filter((user) => {
-            if (user.EMAIL.includes(value) || user.FULLNAME.includes(value)) {
-                return user
+        const newArr = restaurants.filter((restaurant) => {
+            if (restaurant.EMAIL.includes(value) || restaurant.RESTAURANTNAME.includes(value)) {
+                return restaurant
             }
         })
         setLoading(true)
