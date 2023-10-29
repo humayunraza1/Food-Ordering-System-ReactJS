@@ -15,6 +15,7 @@ import { Divider } from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import { useDispatch } from 'react-redux';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 const drawerWidth = 240;
 function Dashboard(props) {
@@ -42,10 +43,13 @@ function Dashboard(props) {
             {props.role === 'admin' && <>
                 <Divider sx={{ width: '100%', height: '30px' }} />
                 <p className={styles.admin}>Admin Controls</p>
-                <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<PersonIcon />}>
+                <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<PersonIcon />} onClick={() => setSearchParams({ ad: 'manage-users' })}>
                     Manage Users
                 </Button>
-                <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<StorefrontIcon />}>
+                <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<StorefrontIcon />} onClick={() => setSearchParams({ ad: 'manage-orders' })}>
+                    Manage Orders
+                </Button>
+                <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<StorefrontIcon />} onClick={() => setSearchParams({ ad: 'manage-restaurants' })}>
                     Manage Restaurants
                 </Button>
             </>}
@@ -101,10 +105,13 @@ function Dashboard(props) {
                             <Divider sx={{ width: '100%', height: '30px' }} />
                             <p className={styles.admin}>Admin Controls</p>
                             <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<PersonIcon />} onClick={() => {
-                                getDetails();
+
                                 setSearchParams({ ad: 'manage-users' })
                             }}>
                                 Manage Users
+                            </Button>
+                            <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<StorefrontIcon />} onClick={() => setSearchParams({ ad: 'manage-orders' })}>
+                                Manage Orders
                             </Button>
                             <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<StorefrontIcon />} onClick={() => setSearchParams({ ad: 'manage-restaurants' })}>
                                 Manage Restaurants
