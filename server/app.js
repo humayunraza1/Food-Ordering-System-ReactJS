@@ -37,5 +37,5 @@ app.use('/admin', adminRoutes);
 app.use('/restaurants', restaurantRoutes);
 
 app.listen(PORT, () => {
-    console.log(`App running on http://localhost:${PORT}`);
+    console.log(`App running on http://192.168.18.139:${PORT}`);
 });

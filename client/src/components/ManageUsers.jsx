@@ -25,7 +25,7 @@ function ManageUsers() {
     const visibleUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage); // Get the products to display on the current page
 
     async function getDetails() {
-        const res = await fetch('http://localhost:3001/admin/admin-dashboard', {
+        const res = await fetch('http://192.168.18.139:3001/admin/admin-dashboard', {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -67,7 +67,7 @@ function ManageUsers() {
 
     async function deleteUser(userId) {
         setLoading(true)
-        const res = await fetch(`http://localhost:3001/admin/remove-user?userid=${userId}`, {
+        const res = await fetch(`http://192.168.18.139:3001/admin/remove-user?userid=${userId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': token,

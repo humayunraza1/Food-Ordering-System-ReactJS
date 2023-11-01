@@ -2,12 +2,11 @@
 import Settings from "./Settings"
 import styles from "./userDetails.module.css"
 import { useSelector } from "react-redux";
-function UserDetails() {
-    const user = useSelector((state) => state.fetchUser.user);
+function UserDetails({ children }) {
 
     return (
         <div className={styles.userContainer}>
-            <Settings user={user} />
+            {children}
         </div>
     )
 }

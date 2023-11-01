@@ -16,7 +16,7 @@ export const updateUserDetailsError = (error) => {
 export const updateUserName = (token, fullname) => {
     return async (dispatch) => {
         try {
-            const res = await fetch('http://localhost:3001/users/update-user-details', {
+            const res = await fetch('http://192.168.18.139:3001/users/update-user-details', {
                 method: 'PUT',
                 headers: {
                     'Authorization': token,
@@ -43,7 +43,7 @@ export const updateUserName = (token, fullname) => {
 export const updateUserNumber = (token, phonenumber) => {
     return async (dispatch) => {
         try {
-            const res = await fetch('http://localhost:3001/users/update-user-details', {
+            const res = await fetch('http://192.168.18.139:3001/users/update-user-details', {
                 method: 'PUT',
                 headers: {
                     'Authorization': token,
@@ -70,7 +70,7 @@ export const updateUserNumber = (token, phonenumber) => {
 export const updateUserAddress = (token, address) => {
     return async (dispatch) => {
         try {
-            const res = await fetch('http://localhost:3001/users/update-user-details', {
+            const res = await fetch('http://192.168.18.139:3001/users/update-user-details', {
                 method: 'PUT',
                 headers: {
                     'Authorization': token,
@@ -96,7 +96,7 @@ export const updateUserAddress = (token, address) => {
 export const updateUserPassword = (token, password) => {
     return async (dispatch) => {
         try {
-            const res = await fetch('http://localhost:3001/users/update-user-details', {
+            const res = await fetch('http://192.168.18.139:3001/users/update-user-details', {
                 method: 'PUT',
                 headers: {
                     'Authorization': token,

@@ -21,9 +21,9 @@ Router.post('/placeOrder', authorize, placeOrder); //
 Router.get('/user-details', authorize, displayUserDetails);             // /users/user-details
 Router.put('/update-user-details', authorize, updateUserDetails);       // /users/update-user-details
 
-// Router.get('/home', authorize, isUser, browseRestaurants); // 
+Router.get('/home', browseRestaurants); // 
 // Router.get('/searchRestaurant', authorize, isUser, searchRestaurant); //
-// Router.get('/browseProducts', authorize, isUser, browseProducts); // 
+Router.get('/browseProducts', browseProducts); // 
 
 Router.get('/orderHistory', authorize, getOrderHistory); // 
 

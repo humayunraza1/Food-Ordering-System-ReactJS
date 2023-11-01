@@ -9,7 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AlertBar from "./AlertBar";
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import AddIcon from '@mui/icons-material/Add';
-import Modal from "./Modal"
+import ModalBox from "./Modal"
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 const token = sessionStorage.getItem('authToken');
@@ -78,7 +78,7 @@ function ManageRestaurants() {
     };
 
     async function getDetails() {
-        const res = await fetch('http://localhost:3001/admin/admin-dashboard', {
+        const res = await fetch('http://192.168.18.139:3001/admin/admin-dashboard', {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -117,26 +117,6 @@ function ManageRestaurants() {
         window.scrollTo({ top: 0, behavior: "smooth" });
         setCurrentPage(value);
     };
-
-
-    async function deleteUser(userId) {
-        setLoading(true)
-        const res = await fetch(`http://localhost:3001/admin/remove-user?userid=${userId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': token,
-                'Content-Type': 'application/json',
-            }
-        })
-        const data = await res.json();
-        setStatus({ status: data.status, msg: data.message });
-        setTimeout(() => {
-            setLoading(false);
-            setShow(true);
-        }, 2000)
-        console.log(data)
-        getDetails();
-    }
 
     async function addRestaurant() {
         setOpen(true);
@@ -202,7 +182,7 @@ function ManageRestaurants() {
 
 
     async function registerRestaurant() {
-        const res = await fetch('http://localhost:3001/admin/add-restaurant', {
+        const res = await fetch('http://192.168.18.139:3001/admin/add-restaurant', {
             method: 'POST',
             headers: {
                 'Authorization': token,
@@ -222,7 +202,7 @@ function ManageRestaurants() {
     }
     return (
         <>
-            {open && <Modal open={open} setOpen={setOpen}>
+            {open && <ModalBox open={open} setOpen={setOpen}>
                 <h2>Add Restaurant</h2>
                 <TextField color="secondary" id="filled-basic" label="Restaurant Name" variant="filled" value={resAccs.restaurantname} onChange={(e) => setResAcc({ ...resAccs, restaurantname: e.target.value })} />
                 <TextField color="secondary" id="filled-basic" label="Email" value={resAccs.email} onChange={(e) => setResAcc({ ...resAccs, email: e.target.value })} variant="filled" />
@@ -251,7 +231,7 @@ function ManageRestaurants() {
                 <TextField id="filled-basic" label="Address" value={resAccs.address} onChange={(e) => setResAcc({ ...resAccs, address: e.target.value })} color="secondary" variant="filled" />
                 <TextField id="filled-basic" label="Website" color="secondary" value={resAccs.website} onChange={(e) => setResAcc({ ...resAccs, website: e.target.value })} variant="filled" />
                 {next && <Button color="secondary" variant="contained" onClick={registerRestaurant}>Register Restaurant</Button>}
-            </Modal>}
+            </ModalBox>}
             <div className={styles.userContainer}>
                 <Tooltip disableFocusListener placement="top" aria-label="Add Restaurant" title="Add Restaurant" >
                     <Fab onClick={addRestaurant} color="secondary" sx={{ position: 'fixed', bottom: '40px', right: '40px' }}><StorefrontIcon /><AddIcon /></Fab>

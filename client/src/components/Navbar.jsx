@@ -13,6 +13,7 @@ import Menu from '@mui/material/Menu';
 import Typography from '@mui/material/Typography';
 import { useState } from "react";
 import Grid from '@mui/material/Unstable_Grid2';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const btnStyle = {
     color: 'common.black',
@@ -82,8 +83,7 @@ function Navbar({ isTitleVisible }) {
     return (
         <nav className={styles.nav}>
             <Grid container spacing={2} sx={{ width: "100%" }}>
-                <Grid xs={12} md={4}></Grid>
-                <Grid xs={8} md={4} className={styles.navbox2}>
+                <Grid xs={11} className={styles.navbox2}>
                     {isTitleVisible && <Zoom in={isTitleVisible}>
                         <h1>
                             Foody Mart
@@ -91,18 +91,23 @@ function Navbar({ isTitleVisible }) {
                     </Zoom>
                     }
                 </Grid>
-                <Grid xs={4} md={4} className={styles.navbox3}>
-                    {sessionStorage.length === 0 &&
+                <Grid xs={1} columnGap={2} className={styles.navbox3}>
+                    {sessionStorage.getItem('authToken') === null &&
                         <>
                             <Button className={styles.btn} variant="outlined" sx={btnStyle2} onClick={() => navigate('/register')}>Signup</Button>
                             <Button className={styles.btn} variant="contained" onClick={() => navigate('/login')} sx={btnStyle}>Login</Button>
                         </>
                     }
+                    {sessionStorage.getItem('authToken') !== null && <>
+                        <IconButton>
+                            <ShoppingCartIcon sx={{ color: grey[50] }} />
+                        </IconButton>
+                    </>}
                     {/* {sessionStorage.length === 1 && <Button className={styles.btn} variant="contained" onClick={() => {
                     sessionStorage.clear()
                     window.location.reload()
                 }} sx={btnStyle}>Logout</Button>} */}
-                    {sessionStorage.length === 1 && <>
+                    {sessionStorage.getItem('authToken') !== null && <>
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -131,8 +136,10 @@ function Navbar({ isTitleVisible }) {
                                 </MenuItem>
                                 <MenuItem key='Logout' onClick={handleCloseUserMenu}>
                                     <Typography textAlign="center" onClick={() => {
-                                        sessionStorage.clear();
-                                        window.location.reload();
+                                        sessionStorage.removeItem('authToken');
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 200)
                                     }}>Logout</Typography>
                                 </MenuItem>
                             </Menu>

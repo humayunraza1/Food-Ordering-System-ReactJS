@@ -51,7 +51,7 @@ const MyFab = styled(Fab)(({ theme }) => ({
     },
 }));
 
-function LoginForm({ setLoggedIn }) {
+function LoginForm({ apiURL, Type }) {
     const [showPassword, setShowPassword] = useState(false);
     const [login, setLogin] = useState({ Email: "", Password: "" });
     const [isLoading, setLoading] = useState(false);
@@ -69,7 +69,7 @@ function LoginForm({ setLoggedIn }) {
         const email = login.Email;
         const password = login.Password;
         setLoading(true);
-        const res = await fetch("http://192.168.18.139:3001/users/login", {
+        const res = await fetch(apiURL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -100,12 +100,20 @@ function LoginForm({ setLoggedIn }) {
                 setLoading(false);
                 setShow(true);
                 setStatus({ Status: 'success', msg: 'Successfuly logged in' })
-                sessionStorage.setItem('authToken', data.token)
-                dispatch(fetchUserDetails(data.token))
-                navigate('/')
-                setTimeout(function () {
-                    window.location.reload();
-                }, 500);
+                if (Type === 'User') {
+                    sessionStorage.setItem('authToken', data.token)
+                    dispatch(fetchUserDetails(data.token))
+                    navigate('/')
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 500);
+                }
+                if (Type === 'Restaurant') {
+                    sessionStorage.setItem('restToken', data.token)
+                    navigate('/restaurant/dashboard')
+                    console.log(sessionStorage)
+                }
+
             }, 2000)
         }
         console.log(data);

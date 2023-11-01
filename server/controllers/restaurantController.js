@@ -11,7 +11,7 @@ const restaurantLogin = async (req, res) => {
     if (!email || !password) {
         console.log(`Restaurant didnt fill all login details (restaurantController/restaurantLogin)`);
         return res.status(400).json({
-            'status': 'failed',
+            'status': 'error',
             'message': 'Please enter all the details!'
         })
     }
@@ -42,7 +42,7 @@ const restaurantLogin = async (req, res) => {
         else {
             connection.close();
             return res.status(401).json({
-                'status': 'failed',
+                'status': 'error',
                 'message': 'Invalid Credentials!'
             })
         }
@@ -62,7 +62,7 @@ const addProduct = async (req, res) => {
     if (!name || !description || !category || !price) {
         console.log(`Restaurant didnt fill all product details (restaurantController/addProduct)`);
         return res.status(400).json({
-            'status': 'failed',
+            'status': 'error',
             'message': 'Please enter all the details!'
         })
     }
@@ -72,7 +72,7 @@ const addProduct = async (req, res) => {
         await connection.execute(
             `INSERT INTO RESTAURANTITEMS (restaurantId, name, description, Category, price) VALUES (:restaurantId, :name, 
                 :description, :category, :price)`,
-            [restaurantId, name, category, description, price],
+            [restaurantId, name, description, category, price],
             { autoCommit: true }
         );
         connection.close();
@@ -105,7 +105,7 @@ const searchProduct = async (req, res) => {
             connection.close();
             if (result.rows.length === 0) {
                 return res.status(404).json({
-                    'status': 'failed',
+                    'status': 'error',
                     'message': 'No Products Found!'
                 })
             }
@@ -135,7 +135,7 @@ const searchProduct = async (req, res) => {
         connection.close();
         if (result.rows.length === 0) {
             return res.status(404).json({
-                'status': 'failed',
+                'status': 'error',
                 'message': 'No Products Found!'
             })
         }
@@ -191,7 +191,7 @@ const getRecentOrders = async (req, res) => {
         connection.close();
         if (result.rows.length === 0) {
             return res.status(404).json({
-                'status': 'failed',
+                'status': 'error',
                 'message': 'No Orders Found!'
             })
         }
@@ -222,7 +222,7 @@ const changeOrderStatus = async (req, res) => {
         );
         if (result.rows.length === 0) {
             return res.status(404).json({
-                'status': 'failed',
+                'status': 'error',
                 'message': 'Order can not be further updated'
             })
         }

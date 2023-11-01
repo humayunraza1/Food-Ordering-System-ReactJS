@@ -11,14 +11,9 @@ import Drawer from '@mui/material/Drawer';
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useSearchParams } from 'react-router-dom';
-import { Divider } from "@mui/material";
-import PersonIcon from '@mui/icons-material/Person';
-import StorefrontIcon from '@mui/icons-material/Storefront';
-import { useDispatch } from 'react-redux';
-import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 const drawerWidth = 240;
-function Dashboard(props) {
+function RestaurantDash(props) {
     const { window } = props;
     const [searchParams, setSearchParams] = useSearchParams();
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -31,11 +26,11 @@ function Dashboard(props) {
 
     const drawer = (
         <Box onClick={handleDrawerToggle} className={styles.drawerContainer} sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <Button key='drawer1' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<SettingsIcon />} onClick={() => setSearchParams({ tab: 'settings' })}>
-                Settings
+            <Button key='drawer1' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<SettingsIcon />} onClick={() => setSearchParams({ res: 'products' })}>
+                Products
             </Button>
-            <Button key='drawer2' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<HistoryIcon />} onClick={() => setSearchParams({ tab: 'order-history' })}>
-                Order History
+            <Button key='drawer2' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<HistoryIcon />} onClick={() => setSearchParams({ res: 'orders' })}>
+                Orders
             </Button>
             <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => {
                 sessionStorage.removeItem('authToken');
@@ -45,19 +40,6 @@ function Dashboard(props) {
             }} >
                 Logout
             </Button>
-            {props.role === 'admin' && <>
-                <Divider sx={{ width: '100%', height: '30px' }} />
-                <p className={styles.admin}>Admin Controls</p>
-                <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<PersonIcon />} onClick={() => setSearchParams({ ad: 'manage-users' })}>
-                    Manage Users
-                </Button>
-                <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<ReceiptLongIcon />} onClick={() => setSearchParams({ ad: 'manage-orders' })}>
-                    Manage Orders
-                </Button>
-                <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<StorefrontIcon />} onClick={() => setSearchParams({ ad: 'manage-restaurants' })}>
-                    Manage Restaurants
-                </Button>
-            </>}
         </Box>
     );
 
@@ -97,11 +79,11 @@ function Dashboard(props) {
                         <MenuIcon />
                     </IconButton>
                     <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' }, width: '1' }}>
-                        <Button key='drawer1' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<SettingsIcon />} onClick={() => setSearchParams({ tab: 'settings' })}>
-                            Settings
+                        <Button key='drawer1' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<SettingsIcon />} onClick={() => setSearchParams({ res: 'products' })}>
+                            Products
                         </Button>
-                        <Button key='drawer2' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<HistoryIcon />} onClick={() => setSearchParams({ tab: 'order-history' })}>
-                            Order History
+                        <Button key='drawer2' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<HistoryIcon />} onClick={() => setSearchParams({ res: 'orders' })}>
+                            Orders
                         </Button>
                         <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => {
                             sessionStorage.removeItem('authToken');
@@ -111,22 +93,6 @@ function Dashboard(props) {
                         }} >
                             Logout
                         </Button>
-                        {props.role === 'admin' && <>
-                            <Divider sx={{ width: '100%', height: '30px' }} />
-                            <p className={styles.admin}>Admin Controls</p>
-                            <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<PersonIcon />} onClick={() => {
-
-                                setSearchParams({ ad: 'manage-users' })
-                            }}>
-                                Manage Users
-                            </Button>
-                            <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<ReceiptLongIcon />} onClick={() => setSearchParams({ ad: 'manage-orders' })}>
-                                Manage Orders
-                            </Button>
-                            <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<StorefrontIcon />} onClick={() => setSearchParams({ ad: 'manage-restaurants' })}>
-                                Manage Restaurants
-                            </Button>
-                        </>}
                     </Box>
                 </Toolbar>
                 <Drawer
@@ -152,4 +118,4 @@ function Dashboard(props) {
 
 }
 
-export default Dashboard
+export default RestaurantDash
