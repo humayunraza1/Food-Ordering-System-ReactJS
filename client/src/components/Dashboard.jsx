@@ -39,9 +39,7 @@ function Dashboard(props) {
             </Button>
             <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => {
                 sessionStorage.removeItem('authToken');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 200)
+                navigate('/login')
             }} >
                 Logout
             </Button>
@@ -105,9 +103,7 @@ function Dashboard(props) {
                         </Button>
                         <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => {
                             sessionStorage.removeItem('authToken');
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 200)
+                            navigate('/login')
                         }} >
                             Logout
                         </Button>

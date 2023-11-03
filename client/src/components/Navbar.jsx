@@ -11,9 +11,11 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Typography from '@mui/material/Typography';
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 import Grid from '@mui/material/Unstable_Grid2';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { Divider, Drawer } from "@mui/material";
+import { CartContext } from "../pages/Home";
 
 const btnStyle = {
     color: 'common.black',
@@ -37,8 +39,11 @@ const btnStyle2 = {
 };
 function Navbar({ isTitleVisible }) {
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const [openCart, setOpenCart] = useState(false);
     const user = useSelector((state) => state.fetchUser.user);
     const navigate = useNavigate();
+    const { cartItem, setCartItem } = useContext(CartContext);
+
     // let token = '';
     // if (sessionStorage.length === 1) {
     //     token = sessionStorage.getItem('authToken');
@@ -70,7 +75,13 @@ function Navbar({ isTitleVisible }) {
     //     }
     // }, [token])
 
+    function toggleDrawer(event) {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
 
+        setOpenCart(false);
+    };
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -91,6 +102,39 @@ function Navbar({ isTitleVisible }) {
                     </Zoom>
                     }
                 </Grid>
+                <Drawer anchor="right" open={openCart} onClose={toggleDrawer}>
+                    <Box className={styles.cartBox} width={'300px'} height={'100dvh'} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', rowGap: '10px' }}>
+                        {<>
+                            <h2>Cart({cartItem.length})</h2>
+                            <Divider width={'100%'} />
+                        </>
+                        }
+                        {cartItem.length === 0 ? <p>Cart is Empty</p> :
+                            cartItem.map((item, i) => {
+                                return <Grid container width={'270px'} sx={{ backgroundColor: 'aliceblue' }} rowGap={1} padding={1} borderRadius={'10px'} fontSize={'0.95rem'}>
+                                    <Grid xs={2}>
+                                        <p>Qty</p>
+                                    </Grid>
+                                    <Grid xs={8} sx={{ display: 'flex', justifyContent: 'center', }}>
+                                        <p>Name</p>
+                                    </Grid>
+                                    <Grid xs={2}>
+                                        <p>Price</p>
+                                    </Grid>
+                                    <Grid xs={2}>
+                                        <p>{item.Qty}</p>
+                                    </Grid>
+                                    <Grid xs={8} sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
+                                        <p>{item.name}</p>
+                                    </Grid>
+                                    <Grid xs={2}>
+                                        <p>{item.price}</p>
+                                    </Grid>
+                                </Grid>
+                            })}
+                        {console.log("navbar cart: ", cartItem)}
+                    </Box>
+                </Drawer>
                 <Grid xs={1} columnGap={2} className={styles.navbox3}>
                     {sessionStorage.getItem('authToken') === null &&
                         <>
@@ -99,7 +143,7 @@ function Navbar({ isTitleVisible }) {
                         </>
                     }
                     {sessionStorage.getItem('authToken') !== null && <>
-                        <IconButton>
+                        <IconButton sx={{ color: grey[50] }} onClick={() => setOpenCart(true)}>
                             <ShoppingCartIcon sx={{ color: grey[50] }} />
                         </IconButton>
                     </>}
@@ -203,7 +247,7 @@ function Navbar({ isTitleVisible }) {
                     </Box>
                 </>} */}
             {/* </div> */}
-        </nav>
+        </nav >
 
     )
 }

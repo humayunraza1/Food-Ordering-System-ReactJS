@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap");
 
 .nav {
   position: fixed;
@@ -46,4 +47,8 @@
     justify-content: start;
     margin-bottom: 10px;
   }
+}
+
+.cartBox {
+  font-family: "Poppins", sans-serif;
 }

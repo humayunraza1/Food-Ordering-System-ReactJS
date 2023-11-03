@@ -1,16 +1,18 @@
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState, useEffect, createContext } from "react"
 import Header from "../components/Header"
 import styles from "./home.module.css"
 import Navbar from "../components/Navbar";
 import { useInView } from 'react-intersection-observer';
 import RestaurantList from "../components/RestaurantList";
 
+const CartContext = createContext();
 function Home({ isLoggedIn, setLoggedIn, info }) {
     const searchText = useRef("");
     const token = sessionStorage.getItem('authToken');
     const [restaurants, setRestaurants] = useState([]);
     const [filteredRestaurants, setFilteredRestaurants] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [cartItem, setCartItems] = useState([]);
     const [isTitleVisible, setIsTitleVisible] = useState(true);
     const [titleRef, inView] = useInView({
         threshold: 0.5, // Adjust the threshold as needed
@@ -40,12 +42,14 @@ function Home({ isLoggedIn, setLoggedIn, info }) {
         getRestaurants()
     }, [])
     return (
-        <div className={styles.homeContainer}>
-            <Navbar isTitleVisible={isTitleVisible} isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} info={info} />
-            <Header titleRef={titleRef} searchText={searchText} />
-            <RestaurantList restaurants={restaurants} filteredRestaurants={filteredRestaurants} setFilteredRestaurants={setFilteredRestaurants} />
-        </div>
+        <CartContext.Provider value={{ cartItem, setCartItems }}>
+            <div className={styles.homeContainer}>
+                <Navbar isTitleVisible={isTitleVisible} isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} info={info} />
+                <Header titleRef={titleRef} searchText={searchText} />
+                <RestaurantList restaurants={restaurants} filteredRestaurants={filteredRestaurants} setFilteredRestaurants={setFilteredRestaurants} />
+            </div>
+        </CartContext.Provider>
     )
 }
 
-export default Home
+export { Home, CartContext }

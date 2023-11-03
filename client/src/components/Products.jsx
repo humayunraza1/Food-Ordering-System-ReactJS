@@ -179,7 +179,6 @@ function Products() {
                                                     <p>Description: {product.DESCRIPTION}</p>
                                                     <p>Catgory: {product.CATEGORY}</p>
                                                     <p>Price: Rs{product.PRICE}</p>
-
                                                 </Grid>
                                                 <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end' }}>
                                                     <Box>

@@ -110,8 +110,9 @@ function LoginForm({ apiURL, Type }) {
                 }
                 if (Type === 'Restaurant') {
                     sessionStorage.setItem('restToken', data.token)
-                    navigate('/restaurant/dashboard')
-                    console.log(sessionStorage)
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 300)
                 }
 
             }, 2000)
