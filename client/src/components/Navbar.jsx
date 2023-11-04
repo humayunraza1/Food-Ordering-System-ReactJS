@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Zoom from '@mui/material/Zoom';
 import { useNavigate } from "react-router";
 import { useSelector } from 'react-redux';
-import { grey } from '@mui/material/colors';
+import { grey, lightGreen, red } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
@@ -11,11 +11,18 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Typography from '@mui/material/Typography';
-import { createContext, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import Grid from '@mui/material/Unstable_Grid2';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { Divider, Drawer } from "@mui/material";
+import { Badge, Divider, Drawer } from "@mui/material";
 import { CartContext } from "../pages/Home";
+import { styled } from '@mui/material/styles';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import ModalBox from "./Modal";
+import CloseIcon from '@mui/icons-material/Close';
+
+const token = sessionStorage.getItem('authToken');
 
 const btnStyle = {
     color: 'common.black',
@@ -37,43 +44,25 @@ const btnStyle2 = {
     },
     boxShadow: 0,
 };
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+        right: -3,
+        top: 13,
+        padding: '0 4px',
+    },
+}));
+
 function Navbar({ isTitleVisible }) {
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [openCart, setOpenCart] = useState(false);
     const user = useSelector((state) => state.fetchUser.user);
+    const [status, setStatus] = useState({ status: '', msg: '' })
+    const [loading, setLoading] = useState(false);
+    const [orderId, setOrderId] = useState(0);
+    const [open, setOpen] = useState(false);
     const navigate = useNavigate();
-    const { cartItem, setCartItem } = useContext(CartContext);
-
-    // let token = '';
-    // if (sessionStorage.length === 1) {
-    //     token = sessionStorage.getItem('authToken');
-    // } else {
-    //     sessionStorage.clear();
-    // }
-    // useEffect(() => {
-    //     try {
-    //         async function fetchData() {
-    //             console.log(token)
-    //             const res = await fetch('http://192.168.18.139:3001/users/user-details', {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Authorization': `${token}`,
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //             });
-
-    //             const data = await res.json();
-    //             if (!data || data.status !== 'success') {
-    //                 console.log(data);
-    //             } else {
-    //                 setName(data.data.FULLNAME.toUpperCase());
-    //             }
-    //         }
-    //         fetchData();
-    //     } catch (err) {
-    //         console.log(err)
-    //     }
-    // }, [token])
+    const { cartItem, setCartItems } = useContext(CartContext);
 
     function toggleDrawer(event) {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -91,6 +80,41 @@ function Navbar({ isTitleVisible }) {
         setAnchorElUser(null);
     };
 
+    async function placeOrder() {
+        setLoading(true);
+        const res = await fetch('http://192.168.18.139:3001/users/placeOrder', {
+            method: 'POST',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                restaurantid: cartItem[0].resid,
+                products: cartItem
+            })
+        })
+        const data = await res.json();
+        if (!data || data.status === 'error') {
+            setStatus({ status: 'error', msg: data.message })
+            setTimeout(() => {
+                setLoading(false);
+                setOpen(true)
+            }, 2000)
+        }
+        if (data.status === 'success') {
+            setOrderId(data.orderId);
+            setStatus({ status: 'success', msg: data.message })
+            setTimeout(() => {
+                setCartItems([])
+                setLoading(false);
+                setOpen(true)
+            }, 2000)
+        }
+
+        console.log(data);
+        // console.log(cartItem[0].resid);
+        // console.log(cartItem)
+    }
     return (
         <nav className={styles.nav}>
             <Grid container spacing={2} sx={{ width: "100%" }}>
@@ -122,7 +146,7 @@ function Navbar({ isTitleVisible }) {
                                         <p>Price</p>
                                     </Grid>
                                     <Grid xs={2}>
-                                        <p>{item.Qty}</p>
+                                        <p>{item.quantity}</p>
                                     </Grid>
                                     <Grid xs={8} sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
                                         <p>{item.name}</p>
@@ -132,7 +156,44 @@ function Navbar({ isTitleVisible }) {
                                     </Grid>
                                 </Grid>
                             })}
-                        {console.log("navbar cart: ", cartItem)}
+                        {open && <ModalBox open={true} setOpen={setOpen} status={status.status} msg={status.msg}>
+                            <Box width={'100%'} height={'300px'}>
+                                <Grid xs={12} textAlign={'end'} justifyContent={'end'}>
+                                    <IconButton onClick={() => setOpen(false)}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                </Grid>
+                                {status.status === 'success' && <div className={styles.finishContainer}>
+                                    <div className={styles.iconContainer}>
+                                        <CheckCircleOutlineIcon fontSize="large" sx={{ color: lightGreen['A400'], scale: '3.5' }} />
+                                    </div>
+                                    <div>
+                                        <Grid container justifyContent={'center'}>
+                                            <Grid xs={12} textAlign={'center'}>
+                                                <h2>{status.msg}</h2>
+                                            </Grid>
+                                            <Grid item textAlign={'center'}>
+                                                <Grid xs={12} fontSize={'2rem'}>{orderId}</Grid>
+                                                <Grid xs={12}>Order Id</Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </div>
+                                </div>}
+
+                                {status.status === 'error' && <div className={styles.finishContainer}>
+                                    <div className={styles.iconContainer}>
+                                        <ErrorOutlineIcon fontSize="large" sx={{ color: red['A700'], scale: '3.5' }} />
+                                    </div>
+                                    <div>
+                                        <h2>Error</h2>
+                                        <h3>{status.msg}</h3>
+                                    </div>
+                                </div>}
+                            </Box>
+
+                        </ModalBox>}
+
+                        {cartItem.length !== 0 && <Button variant="contained" color="secondary" disabled={loading} onClick={placeOrder}>Order</Button>}
                     </Box>
                 </Drawer>
                 <Grid xs={1} columnGap={2} className={styles.navbox3}>
@@ -144,7 +205,9 @@ function Navbar({ isTitleVisible }) {
                     }
                     {sessionStorage.getItem('authToken') !== null && <>
                         <IconButton sx={{ color: grey[50] }} onClick={() => setOpenCart(true)}>
-                            <ShoppingCartIcon sx={{ color: grey[50] }} />
+                            <StyledBadge badgeContent={cartItem.length} color="error">
+                                <ShoppingCartIcon sx={{ color: grey[50] }} />
+                            </StyledBadge>
                         </IconButton>
                     </>}
                     {/* {sessionStorage.length === 1 && <Button className={styles.btn} variant="contained" onClick={() => {

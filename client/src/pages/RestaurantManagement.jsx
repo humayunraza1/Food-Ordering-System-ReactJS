@@ -3,9 +3,9 @@ import UserDetails from '../components/UserDetails';
 import styles from "./userManagement.module.css";
 import { useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import ManageUsers from '../components/ManageUsers';
 import RestaurantDash from '../components/RestaurantDash';
 import Products from "../components/Products"
+import RecentOrders from '../components/RecentOrders';
 function RestaurantManagement() {
 
     // const user = useSelector((state) => state.fetchUser.user);
@@ -29,7 +29,7 @@ function RestaurantManagement() {
         <div className={styles.userManagement}>
             <Grid container>
                 <Grid xs={12} md={2}><RestaurantDash setSearchParams={setSearchParams} searchParams={searchParams} /></Grid>
-                <Grid xs={12} md={10}>{res === "products" && <UserDetails><Products /></UserDetails>} {res === 'orders' && <ManageUsers />}</Grid>
+                <Grid xs={12} md={10}>{res === "products" && <UserDetails><Products /></UserDetails>} {res === 'orders' && <RecentOrders />}</Grid>
             </Grid>
         </div>
     )

@@ -414,7 +414,7 @@ const getOrderHistory = async (req, res) => {
         connection.close();
         if (result.rows.length === 0) {
             return res.status(404).json({
-                'status': 'failed',
+                'status': 'error',
                 'message': 'No Order History Found!'
             })
         }

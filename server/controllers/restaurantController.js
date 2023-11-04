@@ -198,7 +198,7 @@ const getRecentOrders = async (req, res) => {
         return res.status(200).json({
             'status': 'success',
             'message': 'Details Fetched Successfully!',
-            'data': result.rows[0]
+            'data': result.rows
         })
     }
     catch (err) {
@@ -210,6 +210,51 @@ const getRecentOrders = async (req, res) => {
     }
 }
 
+
+const getOrderDetails = async (req, res) => {
+    const { restaurantId } = req.restaurant;
+    const { orderid } = req.query;
+    if (!orderid) {
+        return res.status(400).json({
+            'status': 'error',
+            'message': 'Please provide an Order ID!'
+        })
+    }
+    try {
+        const connection = await getConnection();
+        const result = await connection.execute(
+            `SELECT USERS.fullName, USERS.address, USERS.phone_number,RESTAURANTITEMS.NAME, OrderStatus,
+             ORDER_DETAILS.Quantity, GRANDTOTAL
+             FROM ORDERS
+             inner join USERS ON ORDERS.USERID = USERS.USERID
+             inner join ORDER_DETAILS ON ORDERS.OrderID = ORDER_DETAILS.OrderID
+             inner join RESTAURANTITEMS ON ORDER_DETAILS.ProductID = RESTAURANTITEMS.ProductID
+             WHERE ORDERS.OrderID=:orderid`,
+            [orderid],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        connection.close();
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                'status': 'failed',
+                'message': 'No Order Details Found or You do not have access to this'
+            })
+        }
+        return res.status(200).json({
+            'status': 'success',
+            'message': 'Details Fetched Successfully!',
+            'data': result.rows
+
+        })
+    }
+    catch (err) {
+        console.log(`Error from getOrderDetails function ${err}`);
+        return res.status(500).json({
+            'status': 'error',
+            'message': 'This is an issue from our end please try again later!'
+        })
+    }
+}
 const changeOrderStatus = async (req, res) => {
     const { restaurantId } = req.restaurant;
     const { orderid } = req.body;
@@ -268,6 +313,7 @@ module.exports = {
     removeProduct,
     getRecentOrders,
     changeOrderStatus,
+    getOrderDetails,
 
 }
 

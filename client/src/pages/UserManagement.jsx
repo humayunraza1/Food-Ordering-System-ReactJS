@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import ManageUsers from '../components/ManageUsers';
 import ManageRestaurants from '../components/ManageRestaurants';
 import Settings from '../components/Settings';
+import OrderHistory from '../components/OrderHistory';
 function UserManagement() {
 
     const user = useSelector((state) => state.fetchUser.user);
@@ -44,7 +45,7 @@ function UserManagement() {
 
             <Grid container>
                 <Grid xs={12} md={2}><Dashboard role={ROLE} setSearchParams={setSearchParams} searchParams={searchParams} /></Grid>
-                <Grid xs={12} md={10}>{tab === "settings" && <UserDetails><Settings user={user} /></UserDetails>} {ad === 'manage-users' && <ManageUsers />}{ad === 'manage-restaurants' && <ManageRestaurants />}</Grid>
+                <Grid xs={12} md={10}>{tab === "settings" && <UserDetails><Settings user={user} /></UserDetails>} {tab === 'order-history' && <OrderHistory />}  {ad === 'manage-users' && <ManageUsers />}{ad === 'manage-restaurants' && <ManageRestaurants />}</Grid>
             </Grid>
         </div>
     )

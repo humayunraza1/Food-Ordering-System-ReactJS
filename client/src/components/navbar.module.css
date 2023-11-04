@@ -52,3 +52,19 @@
 .cartBox {
   font-family: "Poppins", sans-serif;
 }
+
+.finishContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-family: "Poppins", sans-serif;
+  align-items: center;
+  height: 250px;
+}
+
+.iconContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}

@@ -41,7 +41,7 @@ function RestaurantList({ loading, restaurants, setFilteredRestaurants, filtered
             setForceLogin(true);
         } else {
             console.log(item)
-            let cart = { _id: item.PRODUCTID, resid: item.RESTAURANTID, name: item.NAME, Qty: 1, price: item.PRICE }
+            let cart = { productId: item.PRODUCTID, resid: item.RESTAURANTID, name: item.NAME, quantity: 1, price: item.PRICE }
             if (cartItem.length === 0) {
                 setCartItems((prev) => { return [...prev, cart] });
                 setStatus({ status: 'success', msg: `${item.NAME} added to cart` })
@@ -50,16 +50,16 @@ function RestaurantList({ loading, restaurants, setFilteredRestaurants, filtered
                     setOpenn(false);
                 }, 1000)
             } else {
-                const existingIndex = cartItem.findIndex((i) => { return i._id === item.PRODUCTID && i.resid === item.RESTAURANTID })
+                const existingIndex = cartItem.findIndex((i) => { return i.productId === item.PRODUCTID && i.resid === item.RESTAURANTID })
                 // console.log("existing index: ", existingIndex);
                 const product = cartItem[existingIndex];
                 // console.log("product: ", product)
                 if (existingIndex >= 0) {
                     const newProd = {
-                        _id: product._id,
+                        productId: product.productId,
                         resid: product.resid,
                         name: product.name,
-                        Qty: product.Qty + 1,
+                        quantity: product.quantity + 1,
                         price: product.price + item.PRICE,
                     }
                     console.log("new product: ", newProd)
@@ -68,7 +68,7 @@ function RestaurantList({ loading, restaurants, setFilteredRestaurants, filtered
                     });
                     console.log("newArr: ", newArr)
                     setCartItems(newArr);
-                    setStatus({ status: 'success', msg: `${newProd.Qty}x ${item.NAME} added to cart` })
+                    setStatus({ status: 'success', msg: `${newProd.quantity}x ${item.NAME} added to cart` })
                     setOpenn(true);
                     setTimeout(() => {
                         setOpenn(false)
@@ -84,8 +84,11 @@ function RestaurantList({ loading, restaurants, setFilteredRestaurants, filtered
                             setOpenn(false);
                         }, 1000)
                     } else {
-                        setStatus({ status: 'error', msg: `item not of the same restaurant as previous items.` })
-                        console.log("ERROR ! not the same restaurant")
+                        setStatus({ status: 'error', msg: `ERROR! Item not of the same restaurant as previous items.` })
+                        setOpenn(true);
+                        setTimeout(() => {
+                            setOpenn(false);
+                        }, 2000)
                     }
                 }
             }
@@ -149,11 +152,11 @@ function RestaurantList({ loading, restaurants, setFilteredRestaurants, filtered
                 </ModalBox>
                 }
                 <div className={styles.listContainer}>
-                    <Grid container sx={{ width: '90%' }} xs={12}>
+                    <Grid container sx={{ width: '90%' }} marginTop={'50px'} rowGap={5}>
                         {filteredRestaurants.length === 0 ? <p>No Restaurants To Show</p> :
                             (filteredRestaurants.map((restaurant, h) => {
                                 var randomValue = Math.floor(2 + Math.random() * 4); // Generates a random integer between 2 and 5 (inclusive of both 2 and 5)
-                                return <Grid container xs={12} sm={6} md={4} lg={3} key={h} sx={{ margin: '50px' }}>
+                                return <Grid container xs={12} sm={6} md={4} lg={3} key={h} justifyContent={'center'}>
                                     {loading ? <Skeleton key={h} animation='wave' variant='rounded' height={'250px'} /> :
                                         <Zoom in={true}>
                                             <div onClick={() => openRestaurant(restaurant.RESTAURANTID)}>

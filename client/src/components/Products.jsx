@@ -50,8 +50,14 @@ function Products() {
             }
         })
         const data = await res.json();
-        setProducts(data.data);
-        setFilteredProducts(data.data);
+        console.log("restaurant data", data)
+        if (data.status === 'error') {
+            setProducts([])
+            setFilteredProducts([])
+        } else if (data.status === 'success') {
+            setProducts(data.data);
+            setFilteredProducts(data.data);
+        }
         setTimeout(() => {
             setLoading(false);
         }, 1000)
@@ -108,6 +114,7 @@ function Products() {
                     setOpen(false);
                     setLoading(false)
                     setDetails(InitialState);
+                    getProducts();
                 }, 500)
             } else {
                 setShow(true);
@@ -160,7 +167,7 @@ function Products() {
                 <Fab onClick={() => setOpen(true)} color="secondary" sx={{ position: 'fixed', bottom: '40px', right: '40px' }}><InventoryIcon /><AddIcon /></Fab>
             </Tooltip>
             <div className={styles.usersList}>
-                {filteredProducts.length === 0 ? <div className={styles.noRes}><p>No restaurants to show</p></div> :
+                {filteredProducts.length === 0 ? <div className={styles.noRes}><p>No products to show</p></div> :
                     <Grid container sx={{ height: '100%', alignItems: 'center', justifyContent: 'center' }} rowGap={5} columnGap={5} xs={12}>
                         {(filteredProducts.map((product, h) => {
                             return <Grid item xs={12} sm={6} md={4} lg={3} key={h}>
