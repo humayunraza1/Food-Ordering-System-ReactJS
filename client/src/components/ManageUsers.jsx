@@ -46,8 +46,12 @@ function ManageUsers() {
 
     async function searchUser() {
         const { value } = searchText.current;
+        const searchValue = value.toLowerCase();
         const newArr = users.filter((user) => {
-            if (user.EMAIL.includes(value) || user.FULLNAME.includes(value)) {
+            const email = user.EMAIL.toLowerCase();
+            const name = user.FULLNAME.toLowerCase();
+
+            if (email.includes(searchValue) || name.includes(searchValue)) {
                 return user
             }
         })
@@ -91,7 +95,7 @@ function ManageUsers() {
                 <Search searchText={searchText} onSearch={searchUser} startIcon={<SearchIcon />} placeholder="Search user's name or email" />
             </div>
             <div className={styles.usersList}>
-                {filteredUsers.length === 0 ? <div className={styles.noRes}><p>No restaurants to show</p></div> :
+                {filteredUsers.length === 0 ? <div className={styles.noRes}><p>No users to show</p></div> :
                     (visibleUsers.map((user, h) => {
                         return <>
                             {loading ? <Skeleton key={h} animation="wave" variant="rounded" sx={{ width: { md: 510, sm: 410, xs: 350 } }} height={100} /> :

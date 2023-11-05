@@ -101,8 +101,12 @@ function ManageRestaurants() {
 
     async function searchUser() {
         const { value } = searchText.current;
+        const searchValue = value.toLowerCase();
+
         const newArr = restaurants.filter((restaurant) => {
-            if (restaurant.EMAIL.includes(value) || restaurant.RESTAURANTNAME.includes(value)) {
+            const email = restaurant.EMAIL.toLowerCase();
+            const name = restaurant.RESTAURANTNAME.toLowerCase();
+            if (email.includes(searchValue) || name.includes(searchValue)) {
                 return restaurant
             }
         })

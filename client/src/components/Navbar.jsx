@@ -64,6 +64,18 @@ function Navbar({ isTitleVisible }) {
     const navigate = useNavigate();
     const { cartItem, setCartItems } = useContext(CartContext);
 
+    const handleLogout = () => {
+        sessionStorage.removeItem('authToken');
+        // Reload the page
+        try {
+            window.location.reload(true);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
+
     function toggleDrawer(event) {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
@@ -242,12 +254,7 @@ function Navbar({ isTitleVisible }) {
                                     <Typography textAlign="center" onClick={() => navigate('users/dashboard')}>Account</Typography>
                                 </MenuItem>
                                 <MenuItem key='Logout' onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center" onClick={() => {
-                                        sessionStorage.removeItem('authToken');
-                                        setTimeout(() => {
-                                            window.location.reload();
-                                        }, 200)
-                                    }}>Logout</Typography>
+                                    <Typography textAlign="center" onClick={() => handleLogout()}>Logout</Typography>
                                 </MenuItem>
                             </Menu>
                         </Box>

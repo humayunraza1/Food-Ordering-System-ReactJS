@@ -101,6 +101,7 @@ function RestaurantList({ loading, restaurants, setFilteredRestaurants, filtered
                 {forceLogin && <ModalBox open={forceLogin} setOpen={setForceLogin}>
                     <h2>Please login first</h2>
                     <Button variant="contained" color="secondary" onClick={() => navigate('/login')}>Login</Button>
+                    <Button color="secondary" onClick={() => navigate('/register')}>Register</Button>
                 </ModalBox>}
                 {open && <ModalBox open={open} setOpen={setOpen}>
                     <Grid container rowGap={2}>

@@ -13,6 +13,20 @@ import { useNavigate } from "react-router";
 import { useSearchParams } from 'react-router-dom';
 
 const drawerWidth = 240;
+
+
+const handleLogout = () => {
+    sessionStorage.removeItem('restToken');
+    // Reload the page
+    try {
+        window.location.reload(true);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// Attach a confirmation message when the user tries to leave the page
+
 function RestaurantDash(props) {
     const { window } = props;
     const [searchParams, setSearchParams] = useSearchParams();
@@ -32,12 +46,7 @@ function RestaurantDash(props) {
             <Button key='drawer2' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<HistoryIcon />} onClick={() => setSearchParams({ res: 'orders' })}>
                 Orders
             </Button>
-            <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => {
-                sessionStorage.removeItem('authToken');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 200)
-            }} >
+            <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => handleLogout()} >
                 Logout
             </Button>
         </Box>
@@ -85,12 +94,7 @@ function RestaurantDash(props) {
                         <Button key='drawer2' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<HistoryIcon />} onClick={() => setSearchParams({ res: 'orders' })}>
                             Orders
                         </Button>
-                        <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => {
-                            sessionStorage.removeItem('authToken');
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 200)
-                        }} >
+                        <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => handleLogout()} >
                             Logout
                         </Button>
                     </Box>

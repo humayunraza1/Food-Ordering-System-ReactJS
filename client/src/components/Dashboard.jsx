@@ -29,6 +29,17 @@ function Dashboard(props) {
     // const dispatch = useDispatch();
     // const token = sessionStorage.getItem('authToken');
 
+    const handleLogout = () => {
+        sessionStorage.removeItem('authToken');
+        // Reload the page
+        try {
+            window.location.reload(true);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
     const drawer = (
         <Box onClick={handleDrawerToggle} className={styles.drawerContainer} sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <Button key='drawer1' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<SettingsIcon />} onClick={() => setSearchParams({ tab: 'settings' })}>
@@ -37,10 +48,7 @@ function Dashboard(props) {
             <Button key='drawer2' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<HistoryIcon />} onClick={() => setSearchParams({ tab: 'order-history' })}>
                 Order History
             </Button>
-            <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => {
-                sessionStorage.removeItem('authToken');
-                navigate('/login')
-            }} >
+            <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => handleLogout()} >
                 Logout
             </Button>
             {props.role === 'admin' && <>
@@ -98,10 +106,7 @@ function Dashboard(props) {
                         <Button key='drawer2' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<HistoryIcon />} onClick={() => setSearchParams({ tab: 'order-history' })}>
                             Order History
                         </Button>
-                        <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => {
-                            sessionStorage.removeItem('authToken');
-                            navigate('/login')
-                        }} >
+                        <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => handleLogout()} >
                             Logout
                         </Button>
                         {props.role === 'admin' && <>
