@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import styles from "./orderHistory.module.css"
-import { Box, Button, Grid, IconButton, Tooltip } from "@mui/material";
+import { Box, Button, Grid, IconButton, Skeleton, Tooltip, Zoom } from "@mui/material";
 import Ripple from "./Ripple";
 import ModalBox from "./Modal"
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,8 +13,10 @@ function RecentOrders() {
     const [open, setOpen] = useState(false);
     const [items, setItems] = useState([]);
     const [details, setDetails] = useState({});
+    const [loading, setLoading] = useState(false);
     const [orderId, setOrderId] = useState(0)
     useEffect(() => {
+        setLoading(true);
         async function getHistory() {
             const res = await fetch('http://192.168.18.139:3001/restaurants/orders', {
                 method: 'GET',
@@ -39,6 +41,9 @@ function RecentOrders() {
             if (data.status === 'error') {
                 setOrders([]);
             }
+            setTimeout(() => {
+                setLoading(false);
+            }, 2000)
         }
         getHistory();
     }, [])
@@ -137,24 +142,26 @@ function RecentOrders() {
                             </div>
                         ) : (
                             orders.map((order, i) => (
-                                <Grid className={styles.orderItem} item key={i} xs={12} height={'100px'} sx={{ marginBottom: '10px', borderRadius: '10px' }} display={'flex'} alignItems={'center'}>
-                                    <Grid container xs={12}>
-                                        <Grid item xs={2} textAlign={'center'} color={'grey'} sx={{ opacity: '0.5' }}>
-                                            <div style={{ fontSize: '2rem' }}>{order.ORDERID}</div>
-                                            <div>Order ID</div>
-                                        </Grid>
-                                        <Grid item xs={7} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                                            <div>{order.ORDERTIMEDATE}</div>
-                                            <div>Rs{order.GRANDTOTAL}</div>
-                                        </Grid>
-                                        <Grid container columnGap={1} xs={3}>
-                                            <Tooltip title={order.ORDERSTATUS} placement="right">
-                                                <Grid xs={12} display={'flex'} sx={{ height: '50px' }} alignItems={'center'} justifyContent={'center'}><Ripple color={Color[i]} /></Grid>
-                                            </Tooltip>
-                                            <Grid xs={12} display={'flex'} justifyContent={'space-around'} alignItems={'end'}><Button color="secondary" onClick={() => getDetails(order.ORDERID)}>Details</Button></Grid>
+                                (loading ? <Skeleton key={i} animation="wave" variant="rounded" sx={{ width: { md: 650, sm: 650, xs: 400 } }} height={100} /> : <Zoom in={true}>
+                                    <Grid className={styles.orderItem} item key={i} xs={12} height={'100px'} sx={{ marginBottom: '10px', borderRadius: '10px' }} display={'flex'} alignItems={'center'}>
+                                        <Grid container xs={12}>
+                                            <Grid item xs={2} textAlign={'center'} color={'grey'} sx={{ opacity: '0.5' }}>
+                                                <div style={{ fontSize: '2rem' }}>{order.ORDERID}</div>
+                                                <div>Order ID</div>
+                                            </Grid>
+                                            <Grid item xs={7} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                                <div>{order.ORDERTIMEDATE}</div>
+                                                <div>Rs{order.GRANDTOTAL}</div>
+                                            </Grid>
+                                            <Grid container columnGap={1} xs={3}>
+                                                <Tooltip title={order.ORDERSTATUS} placement="right">
+                                                    <Grid xs={12} display={'flex'} sx={{ height: '50px' }} alignItems={'center'} justifyContent={'center'}><Ripple color={Color[i]} /></Grid>
+                                                </Tooltip>
+                                                <Grid xs={12} display={'flex'} justifyContent={'space-around'} alignItems={'end'}><Button color="secondary" onClick={() => getDetails(order.ORDERID)}>Details</Button></Grid>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
-                                </Grid>
+                                </Zoom>)
                             ))
                         )
                         }

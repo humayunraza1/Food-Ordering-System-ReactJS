@@ -70,6 +70,7 @@ function ManageRestaurants() {
     const startIndex = (currentPage - 1) * itemsPerPage; // Calculate the starting index for the current page
     const visibleRestaurants = filteredRestaurants.slice(startIndex, startIndex + itemsPerPage); // Get the products to display on the current page
     const [showPassword, setShowPassword] = useState(false);
+    const [showStatus, setShowStatus] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -182,6 +183,8 @@ function ManageRestaurants() {
 
 
     async function registerRestaurant() {
+        setLoading(true);
+        setShowStatus(false);
         const res = await fetch('http://192.168.18.139:3001/admin/add-restaurant', {
             method: 'POST',
             headers: {
@@ -198,15 +201,58 @@ function ManageRestaurants() {
             })
         })
         const data = await res.json();
+        if (!data || data.status === 'error') {
+            setStatus({ status: 'error', msg: data.message })
+        }
+        if (data.status === 'success') {
+            setStatus({ status: 'success', msg: data.message })
+        }
+        setTimeout(() => {
+            setLoading(false);
+            setShowStatus(true);
+            setTimeout(() => {
+                getDetails();
+                setOpen(false);
+            }, 800)
+        }, 2000)
         console.log("data from registration: ", data);
+    }
+
+    async function deleteRestaurant(resid) {
+        setShowStatus(false);
+        const res = await fetch(`http://localhost:3001/admin/restaurants?restaurantid=${resid}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        })
+        const data = await res.json();
+        if (!data || data.status === 'error') {
+            setStatus({ status: 'error', msg: data.message })
+        }
+        if (data.status === 'success') {
+            setLoading(true);
+            setStatus({ status: 'success', msg: data.message })
+        }
+        setTimeout(() => {
+            setLoading(false);
+            setShowStatus(true);
+            getDetails()
+            setTimeout(() => {
+                setShowStatus(false);
+            }, 1000)
+        }, 2000)
+        console.log(data);
     }
     return (
         <>
             {open && <ModalBox open={open} setOpen={setOpen}>
+                {showStatus && <AlertBar status={Status.status} msg={Status.msg} />}
                 <h2>Add Restaurant</h2>
-                <TextField color="secondary" id="filled-basic" label="Restaurant Name" variant="filled" value={resAccs.restaurantname} onChange={(e) => setResAcc({ ...resAccs, restaurantname: e.target.value })} />
-                <TextField color="secondary" id="filled-basic" label="Email" value={resAccs.email} onChange={(e) => setResAcc({ ...resAccs, email: e.target.value })} variant="filled" />
-                <FormControl variant="filled" color="secondary">
+                <TextField disabled={loading} color="secondary" id="filled-basic" label="Restaurant Name" variant="filled" value={resAccs.restaurantname} onChange={(e) => setResAcc({ ...resAccs, restaurantname: e.target.value })} />
+                <TextField disabled={loading} color="secondary" id="filled-basic" label="Email" value={resAccs.email} onChange={(e) => setResAcc({ ...resAccs, email: e.target.value })} variant="filled" />
+                <FormControl disabled={loading} variant="filled" color="secondary">
                     <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
                     <FilledInput
                         id="filled-adornment-password"
@@ -227,16 +273,16 @@ function ManageRestaurants() {
                         }
                     />
                 </FormControl>
-                <TextField color="secondary" id="filled-basic" label="Phone Number" type="number" value={resAccs.phonenumber} onChange={(e) => setResAcc({ ...resAccs, phonenumber: e.target.value })} variant="filled" />
-                <TextField id="filled-basic" label="Address" value={resAccs.address} onChange={(e) => setResAcc({ ...resAccs, address: e.target.value })} color="secondary" variant="filled" />
-                <TextField id="filled-basic" label="Website" color="secondary" value={resAccs.website} onChange={(e) => setResAcc({ ...resAccs, website: e.target.value })} variant="filled" />
-                {next && <Button color="secondary" variant="contained" onClick={registerRestaurant}>Register Restaurant</Button>}
+                <TextField disabled={loading} color="secondary" id="filled-basic" label="Phone Number" type="number" value={resAccs.phonenumber} onChange={(e) => setResAcc({ ...resAccs, phonenumber: e.target.value })} variant="filled" />
+                <TextField disabled={loading} id="filled-basic" label="Address" value={resAccs.address} onChange={(e) => setResAcc({ ...resAccs, address: e.target.value })} color="secondary" variant="filled" />
+                <TextField disabled={loading} id="filled-basic" label="Website" color="secondary" value={resAccs.website} onChange={(e) => setResAcc({ ...resAccs, website: e.target.value })} variant="filled" />
+                {next && <Button disabled={loading} color="secondary" variant="contained" onClick={registerRestaurant}>Register Restaurant</Button>}
             </ModalBox>}
             <div className={styles.userContainer}>
                 <Tooltip disableFocusListener placement="top" aria-label="Add Restaurant" title="Add Restaurant" >
                     <Fab onClick={addRestaurant} color="secondary" sx={{ position: 'fixed', bottom: '40px', right: '40px' }}><StorefrontIcon /><AddIcon /></Fab>
                 </Tooltip>
-                {show && <AlertBar status={Status.status} msg={Status.msg} />}
+                {showStatus && <AlertBar status={Status.status} msg={Status.msg} />}
                 <div className={styles.searchContainer}>
                     <Search searchText={searchText} onSearch={searchUser} startIcon={<SearchIcon />} placeholder="Search restaurant's name" />
                 </div>
@@ -259,9 +305,7 @@ function ManageRestaurants() {
                                                     <p>Ph#: {restaurant.PHONE_NUMBER}</p>
                                                 </Grid>
                                                 <Grid xs={2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                                                    <IconButton color="error" aria-label="delete" onClick={() => {
-                                                        setShow(false);
-                                                    }}>
+                                                    <IconButton color="error" aria-label="delete" onClick={() => deleteRestaurant(restaurant.RESTAURANTID)}>
                                                         <DeleteIcon />
                                                     </IconButton>
                                                 </Grid>

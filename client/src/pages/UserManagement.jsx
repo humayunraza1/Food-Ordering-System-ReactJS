@@ -19,7 +19,7 @@ function UserManagement() {
         const adValue = searchParams.get('ad');
 
         const UserTabValues = ['settings', 'order-history'];
-        const AdminTabValues = ['manage-users', 'manage-restaurants', 'manage-orders'];
+        const AdminTabValues = ['manage-users', 'manage-restaurants'];
 
         if (tabValue === null && adValue === null) {
             setSearchParams({ tab: 'settings' });

@@ -49,9 +49,6 @@ function Dashboard(props) {
                 <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<PersonIcon />} onClick={() => setSearchParams({ ad: 'manage-users' })}>
                     Manage Users
                 </Button>
-                <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<ReceiptLongIcon />} onClick={() => setSearchParams({ ad: 'manage-orders' })}>
-                    Manage Orders
-                </Button>
                 <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<StorefrontIcon />} onClick={() => setSearchParams({ ad: 'manage-restaurants' })}>
                     Manage Restaurants
                 </Button>
@@ -115,9 +112,6 @@ function Dashboard(props) {
                                 setSearchParams({ ad: 'manage-users' })
                             }}>
                                 Manage Users
-                            </Button>
-                            <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<ReceiptLongIcon />} onClick={() => setSearchParams({ ad: 'manage-orders' })}>
-                                Manage Orders
                             </Button>
                             <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<StorefrontIcon />} onClick={() => setSearchParams({ ad: 'manage-restaurants' })}>
                                 Manage Restaurants
