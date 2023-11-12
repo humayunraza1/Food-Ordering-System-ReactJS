@@ -158,7 +158,7 @@ function RestaurantList({ loading, restaurants, setFilteredRestaurants, filtered
                             (filteredRestaurants.map((restaurant, h) => {
                                 var randomValue = Math.floor(2 + Math.random() * 4); // Generates a random integer between 2 and 5 (inclusive of both 2 and 5)
                                 return <Grid container xs={12} sm={6} md={4} lg={3} key={h} justifyContent={'center'}>
-                                    {loading ? <Skeleton key={h} animation='wave' variant='rounded' height={'250px'} /> :
+                                    {loading ? <Skeleton key={h} animation='wave' variant='rounded' sx={{ width: { xs: 350 } }} height={'250px'} /> :
                                         <Zoom in={true}>
                                             <div onClick={() => openRestaurant(restaurant.RESTAURANTID)}>
                                                 <Box className={styles.resBox} sx={{ height: '250px', width: '300px', borderRadius: '10px', boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>

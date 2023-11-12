@@ -31,33 +31,32 @@ function Dashboard(props) {
 
     const handleLogout = () => {
         sessionStorage.removeItem('authToken');
+        navigate('/');
         // Reload the page
-        try {
-            window.location.reload(true);
-        } catch (err) {
-            console.log(err);
-        }
+        window.location.reload();
+
     };
 
 
     const drawer = (
         <Box onClick={handleDrawerToggle} className={styles.drawerContainer} sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <Button key='drawer1' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<SettingsIcon />} onClick={() => setSearchParams({ tab: 'settings' })}>
+            <p className={styles.admin}>User Controls</p>
+            <Button key='drawer11' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<SettingsIcon />} onClick={() => setSearchParams({ tab: 'settings' })}>
                 Settings
             </Button>
-            <Button key='drawer2' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<HistoryIcon />} onClick={() => setSearchParams({ tab: 'order-history' })}>
+            <Button key='drawer23' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<HistoryIcon />} onClick={() => setSearchParams({ tab: 'order-history' })}>
                 Order History
             </Button>
-            <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => handleLogout()} >
+            <Button key='drawer32' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<LogoutIcon />} onClick={() => handleLogout()} >
                 Logout
             </Button>
             {props.role === 'admin' && <>
                 <Divider sx={{ width: '100%', height: '30px' }} />
                 <p className={styles.admin}>Admin Controls</p>
-                <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<PersonIcon />} onClick={() => setSearchParams({ ad: 'manage-users' })}>
+                <Button key='drawer31' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<PersonIcon />} onClick={() => setSearchParams({ ad: 'manage-users' })}>
                     Manage Users
                 </Button>
-                <Button key='drawer3' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<StorefrontIcon />} onClick={() => setSearchParams({ ad: 'manage-restaurants' })}>
+                <Button key='drawer30' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<StorefrontIcon />} onClick={() => setSearchParams({ ad: 'manage-restaurants' })}>
                     Manage Restaurants
                 </Button>
             </>}
@@ -82,7 +81,7 @@ function Dashboard(props) {
         <div className={styles.dashboardContainer}>
             <div className={styles.heading}>
                 <h1 onClick={() => navigate('/')}>
-                    Foody Mart
+                    Foody.io
                 </h1>
                 <div>
                     Eat That Foody.
@@ -100,6 +99,7 @@ function Dashboard(props) {
                         <MenuIcon />
                     </IconButton>
                     <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' }, width: '1' }}>
+                        <p className={styles.admin}>User Controls</p>
                         <Button key='drawer1' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<SettingsIcon />} onClick={() => setSearchParams({ tab: 'settings' })}>
                             Settings
                         </Button>

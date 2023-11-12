@@ -7,7 +7,7 @@ function logoComp({ children }) {
                 <div className={styles.loginContents}>
                     <div className={styles.heading}>
                         <h1>
-                            Foody Mart
+                            Foody.io
                         </h1>
                         <div>
                             Eat That Foody.

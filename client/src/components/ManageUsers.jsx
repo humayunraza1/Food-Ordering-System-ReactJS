@@ -44,7 +44,7 @@ function ManageUsers() {
         getDetails()
     }, []);
 
-    async function searchUser() {
+    function searchUser() {
         const { value } = searchText.current;
         const searchValue = value.toLowerCase();
         const newArr = users.filter((user) => {

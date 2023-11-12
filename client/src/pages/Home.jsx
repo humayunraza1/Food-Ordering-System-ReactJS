@@ -34,19 +34,40 @@ function Home({ isLoggedIn, setLoggedIn, info }) {
             })
             const data = await res.json();
             setRestaurants(data.data);
+            console.log(data.data)
             setFilteredRestaurants(data.data);
             setTimeout(() => {
                 setLoading(false);
-            }, 1000)
+            }, 2000)
         }
         getRestaurants()
     }, [])
+
+
+    function searchRestaurant() {
+        const { value } = searchText.current;
+        const searchValue = value.toLowerCase();
+        console.log(searchValue)
+        const newArr = restaurants.filter((restaurant) => {
+            const name = restaurant.RESTAURANTNAME.toLowerCase()
+            if (name.includes(searchValue)) {
+                return restaurant
+            }
+        })
+        setLoading(true)
+        setFilteredRestaurants(newArr)
+        setTimeout(() => {
+            setLoading(false);
+        }, 2500)
+
+    }
+
     return (
         <CartContext.Provider value={{ cartItem, setCartItems }}>
             <div className={styles.homeContainer}>
                 <Navbar isTitleVisible={isTitleVisible} isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} info={info} />
-                <Header titleRef={titleRef} searchText={searchText} />
-                <RestaurantList restaurants={restaurants} filteredRestaurants={filteredRestaurants} setFilteredRestaurants={setFilteredRestaurants} />
+                <Header titleRef={titleRef} searchText={searchText} onSearch={searchRestaurant} />
+                <RestaurantList loading={loading} restaurants={restaurants} filteredRestaurants={filteredRestaurants} setFilteredRestaurants={setFilteredRestaurants} />
             </div>
         </CartContext.Provider>
     )

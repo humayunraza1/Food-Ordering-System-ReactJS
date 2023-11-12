@@ -130,6 +130,7 @@ function LoginForm({ apiURL, Type }) {
         <>
             {Show && <AlertBar status={status.Status} msg={status.msg} />}
             <LogoComp>
+                {Type === 'User' ? <p className={styles.loginTitle}> User Login</p> : <p className={styles.loginTitle}>Restaurant Login</p>}
                 <div className={styles.formContainer}>
                     <form method="post" className={styles.formC}>
                         <FormControl variant="standard" sx={{ m: 1, width: '35ch' }} disabled={isLoading}>

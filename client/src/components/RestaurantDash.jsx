@@ -15,15 +15,6 @@ import { useSearchParams } from 'react-router-dom';
 const drawerWidth = 240;
 
 
-const handleLogout = () => {
-    sessionStorage.removeItem('restToken');
-    // Reload the page
-    try {
-        window.location.reload(true);
-    } catch (err) {
-        console.log(err);
-    }
-};
 
 // Attach a confirmation message when the user tries to leave the page
 
@@ -38,8 +29,21 @@ function RestaurantDash(props) {
     // const dispatch = useDispatch();
     // const token = sessionStorage.getItem('authToken');
 
+    const handleLogout = () => {
+        sessionStorage.removeItem('restToken');
+        // Reload the page
+        navigate('/restaurant/login');
+        try {
+            window.location.reload(true);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
     const drawer = (
         <Box onClick={handleDrawerToggle} className={styles.drawerContainer} sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <p className={styles.admin}>Restaurant Controls</p>
             <Button key='drawer1' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<SettingsIcon />} onClick={() => setSearchParams({ res: 'products' })}>
                 Products
             </Button>
@@ -70,11 +74,12 @@ function RestaurantDash(props) {
         <div className={styles.dashboardContainer}>
             <div className={styles.heading}>
                 <h1 onClick={() => navigate('/')}>
-                    Foody Mart
+                    Foody.io
                 </h1>
                 <div>
                     Eat That Foody.
                 </div>
+
             </div>
             <div className={styles.btnContainer}>
                 <Toolbar sx={{ width: '10' }}>
@@ -88,6 +93,8 @@ function RestaurantDash(props) {
                         <MenuIcon />
                     </IconButton>
                     <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' }, width: '1' }}>
+                        <p className={styles.admin}>Restaurant Controls</p>
+
                         <Button key='drawer1' sx={{ width: '100%', marginTop: '10px', height: '50px' }} color="secondary" startIcon={<SettingsIcon />} onClick={() => setSearchParams({ res: 'products' })}>
                             Products
                         </Button>

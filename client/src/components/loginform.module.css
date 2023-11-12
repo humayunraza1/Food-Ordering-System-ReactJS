@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap");
+
 .formContainer {
   margin-top: 25px;
   display: flex;
@@ -11,4 +13,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.loginTitle {
+  margin-top: 16px;
+  color: darkmagenta;
+  font-family: "Poppins", sans-serif;
 }
