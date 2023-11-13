@@ -103,7 +103,7 @@ const login = async (req, res) => {
         }
 
         return res.status(401).json({
-            'status': 'failed',
+            'status': 'error',
             'message': 'Invalid Credentials!'
         })
 
@@ -138,7 +138,7 @@ const displayUserDetails = async (req, res) => {
             })
         }
         return res.status(404).json({
-            'status': 'failed',
+            'status': 'error',
             'message': 'User Not Found!'
         })
 
@@ -239,7 +239,7 @@ const browseRestaurants = async (req, res) => {
             connection.close();
             if (result.rows.length === 0) {
                 return res.status(404).json({
-                    'status': 'failed',
+                    'status': 'error',
                     'message': 'No Restaurants Found!'
                 })
             }
@@ -276,7 +276,7 @@ const browseRestaurants = async (req, res) => {
             })
         }
         return res.status(404).json({
-            'status': 'failed',
+            'status': 'error',
             'message': 'No Restaurant Found!'
         })
     }
@@ -311,7 +311,7 @@ const browseProducts = async (req, res) => {
         connection.close();
         if (result.rows.length === 0) {
             return res.status(404).json({
-                'status': 'failed',
+                'status': 'error',
                 'message': 'No Products Found!'
             })
         }
@@ -459,7 +459,7 @@ const getOrderDetails = async (req, res) => {
         connection.close();
         if (result.rows.length === 0) {
             return res.status(404).json({
-                'status': 'failed',
+                'status': 'error',
                 'message': 'No Order Details Found or You do not have access to this'
             })
         }

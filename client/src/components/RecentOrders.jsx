@@ -138,7 +138,7 @@ function RecentOrders() {
                         </Grid>
                         {orders.length === 0 ? (
                             <div style={{ width: '100%', height: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <h1 style={{ color: 'grey', opacity: 0.5, fontWeight: 400, fontSize: '3rem' }}>No past orders</h1>
+                                <h1 style={{ color: 'grey', opacity: 0.5, fontWeight: 400, fontSize: '3rem' }}>No active orders</h1>
                             </div>
                         ) : (
                             orders.map((order, i) => (

@@ -10,7 +10,7 @@ import AlertBar from "./AlertBar";
 
 const token = sessionStorage.getItem('authToken');
 
-function ManageUsers() {
+function ManageUsers({ role }) {
 
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]); // New state for filtered users
@@ -41,7 +41,11 @@ function ManageUsers() {
     }
 
     useEffect(() => {
-        getDetails()
+        if (role === 'admin') {
+            getDetails()
+        } else {
+            return
+        }
     }, []);
 
     function searchUser() {

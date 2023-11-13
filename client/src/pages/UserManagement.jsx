@@ -45,7 +45,7 @@ function UserManagement() {
 
             <Grid container>
                 <Grid xs={12} md={2}><Dashboard role={ROLE} setSearchParams={setSearchParams} searchParams={searchParams} /></Grid>
-                <Grid xs={12} md={10}>{tab === "settings" && <UserDetails><Settings user={user} /></UserDetails>} {tab === 'order-history' && <OrderHistory />}  {ad === 'manage-users' && <ManageUsers />}{ad === 'manage-restaurants' && <ManageRestaurants />}</Grid>
+                <Grid xs={12} md={10}>{tab === "settings" && <UserDetails><Settings role={ROLE} user={user} /></UserDetails>} {tab === 'order-history' && <OrderHistory />}  {ad === 'manage-users' && <ManageUsers role={ROLE} />}{ad === 'manage-restaurants' && <ManageRestaurants />}</Grid>
             </Grid>
         </div>
     )

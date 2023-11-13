@@ -17,6 +17,10 @@ function RestaurantList({ loading, restaurants, setFilteredRestaurants, filtered
     const [status, setStatus] = useState({ status: '', msg: '' });
     const [openn, setOpenn] = useState(false);
 
+    useEffect(() => {
+        console.log("length", filteredRestaurants.length)
+    }, [])
+
     async function openRestaurant(resID, resName) {
         setOpen(true);
         const res = await fetch(`http://192.168.18.139:3001/users/browseProducts?restaurantid=${resID}`, {
@@ -31,8 +35,13 @@ function RestaurantList({ loading, restaurants, setFilteredRestaurants, filtered
                 return res
             }
         })
-        setSelectedRestaurant(data.data);
-        setDetails({ restaurantName: find.RESTAURANTNAME, restaurantWebsite: find.WEBSITE });
+
+        if (!data || data.status === 'error') {
+            setSelectedRestaurant([])
+        } else if (data.status === 'success') {
+            setSelectedRestaurant(data.data);
+            setDetails({ restaurantName: find.RESTAURANTNAME, restaurantWebsite: find.WEBSITE });
+        }
     }
 
     function addToCart(item) {
@@ -125,7 +134,8 @@ function RestaurantList({ loading, restaurants, setFilteredRestaurants, filtered
                         <Divider width={'100%'} sx={{ backgroundColor: 'black', marginBottom: '10px' }} />
                         <h2>ITEMS</h2>
                         <Grid container rowGap={'10px'}>
-                            {seletedRestaurant.map((item, h) => {
+
+                            {seletedRestaurant.length === 0 ? <p>No items listed</p> : seletedRestaurant.map((item, h) => {
                                 return <Box width={'100%'} height={'50px'} sx={{ backgroundColor: 'aliceblue', borderRadius: '10px' }}>
                                     <Grid container>
                                         <Grid xs={9} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>

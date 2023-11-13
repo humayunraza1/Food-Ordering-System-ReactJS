@@ -33,9 +33,13 @@ function Home({ isLoggedIn, setLoggedIn, info }) {
                 }
             })
             const data = await res.json();
-            setRestaurants(data.data);
-            console.log(data.data)
-            setFilteredRestaurants(data.data);
+            if (!data || data.status === 'error') {
+                setRestaurants([])
+                setFilteredRestaurants([])
+            } else if (data.status === 'success') {
+                setRestaurants(data.data);
+                setFilteredRestaurants(data.data);
+            }
             setTimeout(() => {
                 setLoading(false);
             }, 2000)

@@ -29,7 +29,7 @@ function isValidNumber(number) {
 }
 
 
-function Settings({ user }) {
+function Settings({ user, role }) {
     const { FULLNAME, EMAIL, ADDRESS, PHONE_NUMBER } = user
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
@@ -75,7 +75,7 @@ function Settings({ user }) {
         return <ModalBox open={true} setOpen={setOpen} >
             {show && <AlertBar status={status.status} msg={status.msg} />}
 
-            <h2>Change Name</h2>
+            <h2>Change Address</h2>
             <TextField type="text" value={fullname} color="secondary" id="filled-basic" label="Name" variant="filled" disabled={loading} onChange={(e) => setAddress(e.target.value)} />
             <Button disabled={loading} variant="contained" color="secondary" onClick={() => {
                 handleChangeAddress();
@@ -89,7 +89,7 @@ function Settings({ user }) {
         return <ModalBox open={true} setOpen={setOpen} >
             {show && <AlertBar status={status.status} msg={status.msg} />}
 
-            <h2>Change Name</h2>
+            <h2>Change Number</h2>
             <TextField type="text" value={number} color="secondary" id="filled-basic" label="Number" variant="filled" onChange={(e) => setNumber(e.target.value)} disabled={loading} />
             {isValidNumber(number) && <Button variant="contained" color="secondary" disabled={loading} onClick={() => {
                 handleChangeNumber();

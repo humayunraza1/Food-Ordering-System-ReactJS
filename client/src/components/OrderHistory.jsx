@@ -142,36 +142,40 @@ function OrderHistory() {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        {orders.length === 0 ? (
-                            <p>No orders to show</p>
+                        {visibleActive.length === 0 ? (
+                            <h1 style={{ display: 'flex', justifyContent: "center", width: '100%', color: 'grey', opacity: 0.5, fontWeight: 400, fontSize: '3rem' }}>No active orders</h1>
                         ) : (visibleActive.map((order, i) => (
                             (loading ? <Skeleton key={i} animation="wave" variant="rounded" sx={{ width: { md: 650, sm: 650, xs: 400 } }} height={100} /> :
-                                <Zoom in={true}>
-                                    <Grid className={styles.orderItem} item key={i} xs={12} height={'100px'} sx={{ marginBottom: '10px', borderRadius: '10px' }} display={'flex'} alignItems={'center'}>
-                                        <Grid container xs={12}>
-                                            <Grid item xs={2} textAlign={'center'} color={'grey'} sx={{ opacity: '0.5' }}>
-                                                <div style={{ fontSize: '2rem' }}>{order.ORDERID}</div>
-                                                <div>Order ID</div>
-                                            </Grid>
-                                            <Grid item xs={7}>
-                                                <div>{order.RESTAURANTNAME}</div>
-                                                <div>{order.ORDERTIMEDATE}</div>
-                                                <div>Rs{order.GRANDTOTAL}</div>
-                                            </Grid>
-                                            <Grid container columnGap={1} xs={3}>
-                                                <Tooltip title={order.ORDERSTATUS} placement="right">
-                                                    <Grid xs={12} display={'flex'} sx={{ height: '50px' }} alignItems={'center'} justifyContent={'center'}><Ripple color={Color[i]} /></Grid>
-                                                </Tooltip>
-                                                <Grid xs={12} display={'flex'} justifyContent={'space-around'} alignItems={'end'}><Button color="secondary" onClick={() => getDetails(order.ORDERID)}>Details</Button></Grid>
+                                <>
+
+                                    <Zoom in={true}>
+                                        <Grid className={styles.orderItem} item key={i} xs={12} height={'100px'} sx={{ marginBottom: '10px', borderRadius: '10px' }} display={'flex'} alignItems={'center'}>
+                                            <Grid container xs={12}>
+                                                <Grid item xs={2} textAlign={'center'} color={'grey'} sx={{ opacity: '0.5' }}>
+                                                    <div style={{ fontSize: '2rem' }}>{order.ORDERID}</div>
+                                                    <div>Order ID</div>
+                                                </Grid>
+                                                <Grid item xs={7}>
+                                                    <div>{order.RESTAURANTNAME}</div>
+                                                    <div>{order.ORDERTIMEDATE}</div>
+                                                    <div>Rs{order.GRANDTOTAL}</div>
+                                                </Grid>
+                                                <Grid container columnGap={1} xs={3}>
+                                                    <Tooltip title={order.ORDERSTATUS} placement="right">
+                                                        <Grid xs={12} display={'flex'} sx={{ height: '50px' }} alignItems={'center'} justifyContent={'center'}><Ripple color={Color[i]} /></Grid>
+                                                    </Tooltip>
+                                                    <Grid xs={12} display={'flex'} justifyContent={'space-around'} alignItems={'end'}><Button color="secondary" onClick={() => getDetails(order.ORDERID)}>Details</Button></Grid>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
-                                    </Grid>
 
-                                </Zoom>)
+                                    </Zoom>
+                                    <Grid xs={12} display={'flex'} justifyContent={'center'}>
+                                        <Pagination page={page1} count={totalPages1} onChange={handlePageChange1} color="secondary" />
+                                    </Grid>
+                                </>)
                         )))}
-                        <Grid xs={12} display={'flex'} justifyContent={'center'}>
-                            <Pagination page={page1} count={totalPages1} onChange={handlePageChange1} color="secondary" />
-                        </Grid>
+
                         <Grid container xs={12}>
                             <Grid sm={12}>
                                 <h1>Past Orders ({completed.length})</h1>
@@ -209,7 +213,7 @@ function OrderHistory() {
                         </Grid>
                     </Grid>
                 </div>
-            </div>
+            </div >
         </>
     )
 }
