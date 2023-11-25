@@ -33,8 +33,6 @@ function Dashboard(props) {
         sessionStorage.removeItem('authToken');
         navigate('/');
         // Reload the page
-        window.location.reload();
-
     };
 
 

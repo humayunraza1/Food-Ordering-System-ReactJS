@@ -87,7 +87,7 @@ function LoginForm({ apiURL, Type }) {
             setStatus({ Status: 'error', msg: 'Error Occurred!' })
         }
 
-        if (data.status === 'failed') {
+        if (data.status === 'error') {
             setTimeout(function () {
                 setLoading(false);
                 setShow(true);
@@ -103,10 +103,10 @@ function LoginForm({ apiURL, Type }) {
                 if (Type === 'User') {
                     sessionStorage.setItem('authToken', data.token)
                     dispatch(fetchUserDetails(data.token))
-                    navigate('/')
                     setTimeout(function () {
+                        navigate('/')
                         window.location.reload();
-                    }, 500);
+                    }, 1000);
                 }
                 if (Type === 'Restaurant') {
                     sessionStorage.setItem('restToken', data.token)

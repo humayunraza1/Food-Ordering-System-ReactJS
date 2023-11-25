@@ -164,37 +164,39 @@ const updateUserDetails = async (req, res) => {
                 { autoCommit: true }
             );
         }
-        if (newpassword && newpassword.length >= 6) {
+        if (newpassword && oldpassword) {
+            if (newpassword && newpassword.length >= 6) {
 
-            const HashedNewPassword = await bcrypt.hash(newpassword, 10);
-            const result = await connection.execute(
-                `SELECT password FROM USERS WHERE UserID=:UserID`,
-                [userId],
-                { outFormat: oracledb.OUT_FORMAT_OBJECT }
-            );
-            const user = result.rows[0];
-            if (!await bcrypt.compare(oldpassword, user.PASSWORD)) {
+                const HashedNewPassword = await bcrypt.hash(newpassword, 10);
+                const result = await connection.execute(
+                    `SELECT password FROM USERS WHERE UserID=:UserID`,
+                    [userId],
+                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                );
+                const user = result.rows[0];
+                if (!await bcrypt.compare(oldpassword, user.PASSWORD)) {
+                    return res.status(400).json({
+                        'status': 'error',
+                        'message': 'Old Password is incorrect!'
+                    })
+                }
+                if (oldpassword === newpassword) {
+                    return res.status(400).json({
+                        'status': 'error',
+                        'message': 'New Password cannot be the same as the old password!'
+                    })
+                }
+                await connection.execute(
+                    `UPDATE USERS SET password=:password WHERE UserID=:UserID`,
+                    [HashedNewPassword, userId],
+                    { autoCommit: true }
+                );
+            } else {
                 return res.status(400).json({
                     'status': 'error',
-                    'message': 'Old Password is incorrect!'
+                    'message': 'Password length too short'
                 })
             }
-            if (oldpassword === newpassword) {
-                return res.status(400).json({
-                    'status': 'error',
-                    'message': 'New Password cannot be the same as the old password!'
-                })
-            }
-            await connection.execute(
-                `UPDATE USERS SET password=:password WHERE UserID=:UserID`,
-                [HashedNewPassword, userId],
-                { autoCommit: true }
-            );
-        } else {
-            return res.status(400).json({
-                'status': 'error',
-                'message': 'Password length too short'
-            })
         }
         if (phonenumber && phoneNumberRegex.test(phonenumber)) { // Update Phone Number
             await connection.execute(
